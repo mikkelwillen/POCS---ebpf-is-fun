@@ -1,0 +1,129 @@
+#!/usr/bin/env ruby
+
+$setup_dev_tools = <<-'SCRIPT'
+set -xe
+export NEEDRESTART_MODE=a
+export DEBIAN_FRONTEND=noninteractive
+apt-get -qq update
+apt-get -qq upgrade -y
+sudo apt-get install -y clang llvm libbpf-dev binutils-bpf \
+        libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 \
+        cmake
+
+# Allow unprivileged user to run (some) eBPF programs
+# sysctl -w kernel.unprivileged_bpf_disabled=0
+echo "kernel.unprivileged_bpf_disabled=0" > /etc/sysctl.d/42-ebpf-yolo.conf #???
+service procps restart
+
+systemctl restart networkd-dispatcher.service
+#needrestart -r a
+
+#         apt-transport-https ca-certificates curl \
+#         software-properties-common \
+#         strace binutils binutils-dev build-essential \
+#         bash-completion git \
+#         python3-dev python3-pip \
+#         clang llvm gcc-bpf \
+#         net-tools wget lsb-release \
+#         libbpf-dev \
+#         libffi-dev libffi8ubuntu1 libgmp-dev libgmp10 libncurses-dev libncurses5 libtinfo5 \
+#         debhelper libssl-dev libelf-dev libudev-dev libpci-dev \
+#         gawk flex bison openssl dkms libiberty-dev autoconf \
+SCRIPT
+
+$setup_ghcup = <<-'SCRIPT'
+set -xe
+mkdir -p $HOME/.local/bin
+export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
+echo 'export PATH=$HOME/.local/bin:/usr/local/bin:$PATH' >> $HOME/.bashrc
+echo "Warning, installing cabal takes several minutes"
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | \
+    BOOTSTRAP_HASKELL_NONINTERACTIVE=1 \
+    BOOTSTRAP_HASKELL_MINIMAL=1 \
+    BOOTSTRAP_HASKELL_ADJUST_BASHRC=1 \
+    sh
+source $HOME/.ghcup/env
+ghcup upgrade
+ghcup install ghc 9.8.2
+ghcup set ghc 9.8.2
+ghcup install cabal
+cabal update
+ghcup install stack
+stack config set system-ghc --global true
+SCRIPT
+
+
+# Install bpftrace
+$setup_bpftrace = <<-'SCRIPT'
+  sudo apt-get update
+  sudo apt-get install -y bpftrace
+SCRIPT
+
+$setup_bpftools = <<-'SCRIPT'
+    git clone -b v6.1 https://github.com/torvalds/linux.git --depth 1
+    (cd linux/tools/bpf/bpftool && \
+     make && cp bpftool $HOME/.local/bin)
+SCRIPT
+
+
+$msg = <<~MSG
+------------------------------------------------------
+The POCS-functional-ebpf VM is ready
+
+Get ssh access with the command
+    vagrant ssh
+
+The files in the current directory can be found
+in the /vagrant directory
+------------------------------------------------------
+MSG
+
+Vagrant.configure(2) do |config|
+  # Every Vagrant virtual environment requires a box to build off
+  # of. We build of Ubuntu 22.04 (Jammy Jellyfish)
+  config.vm.box = "ubuntu/jammy64"
+
+  config.vm.hostname = "POCS-functional-ebpf"
+  # config.vm.network "forwarded_port", guest: 22, host: 2222,
+  #                  host_ip: "127.0.0.1", id: 'ssh'
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = "POCS functional ebpf"
+    # vb.memory = "8192"
+    # vb.cpus = 8
+   end
+
+  # config.ssh.forward_agent = true
+
+
+  # Install some useful tools
+  config.vm.provision :shell, name: "Install basic tools", inline: $setup_dev_tools
+
+  config.vm.provision "shell", name: "Make ./local/bin for the normal user", privileged: false, inline: <<-SHELL
+    set -xe
+    mkdir -p $HOME/.local/bin
+    export PATH=$HOME/.local/bin:/usr/local/bin:$PATH
+    echo 'export PATH=$HOME/.local/bin:/usr/local/bin:$PATH' >> $HOME/.bashrc
+   SHELL
+
+
+  # Setup GHC
+  config.vm.provision "shell", name: "Setting up ghcup (etc) for the normal user", privileged: false, inline: $setup_ghcup
+
+
+  # Download and compile bpftools
+  config.vm.provision "shell", name: "Download and compile bpftools", privileged: false, inline: $setup_bpftools
+
+  # Clone and compile ebpf-tools
+  # config.vm.provision "shell", name: "Compile ebpf-tools", privileged: false, inline: <<-SHELL
+  #  source $HOME/.ghcup/env
+  #  git clone https://github.com/kfl/ebpf-tools.git
+  #  (cd ebpf-tools && cabal build &&
+  #  cp dist-newstyle/build/x86_64-linux/ghc-9.4.7/ebpf-tools-0.1.0.0/x/ebpf-tools/build/ebpf-tools/ebpf-tools $HOME/.local/bin)
+  # SHELL
+
+  # Clone and install bpftrace
+  # config.vm.provision "shell", name: "Clone and install bpftrace", privileged: false, inline: $setup_bpftrace
+
+  config.vm.post_up_message = $msg
+
+end

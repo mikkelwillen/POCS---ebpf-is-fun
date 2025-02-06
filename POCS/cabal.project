@@ -1,0 +1,15 @@
+packages:
+  ebpf-linux-api/
+  server-lib/
+
+-- Using the unreleased v. 0.2.0.0 of ebpf-tools from github
+source-repository-package
+    type: git
+    location: https://github.com/kfl/ebpf-tools.git
+    tag: 3024cfaddd9160bb746a2b20d982c511791c8644
+
+-- extra-include-dirs: /usr/src/linux-headers-6.8.0-49-generic/include
+
+tests: True
+test-show-details: direct
+multi-repl: True

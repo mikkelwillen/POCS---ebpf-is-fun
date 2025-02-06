@@ -1,0 +1,78 @@
+cabal-version:   3.4
+name:            server-lib
+version:         0.1.0.0
+license:         NONE
+build-type:      Simple
+
+common common-deps
+    build-depends:
+           base >=4.19 && <5
+         , network
+         , network-run
+         , unix
+         , process
+         , binary
+         , containers
+         , bytestring
+         , optparse-applicative
+         , split
+         , word8
+         , ebpf-tools
+         , ebpf-linux-api
+    default-language: Haskell2010
+
+library
+    import: common-deps
+    exposed-modules:
+        ServerLib
+    hs-source-dirs:   server
+    default-language: Haskell2010
+
+executable plain-server
+    import: common-deps
+    build-depends:
+        server-lib
+    main-is:          Main.hs
+    hs-source-dirs:   plain
+
+executable snoop-server
+    import: common-deps
+    build-depends:
+        server-lib
+    main-is:          Main.hs
+    hs-source-dirs:   snoop
+
+executable socketfilter-server
+    import: common-deps
+    build-depends:
+        server-lib
+    main-is:          Main.hs
+    hs-source-dirs:   socketfilter
+
+executable snoop-filter-server
+    import: common-deps
+    build-depends:
+        server-lib
+    main-is:          Main.hs
+    hs-source-dirs:   snoop-filter
+
+executable printk-server
+    import: common-deps
+    build-depends:
+          server-lib
+    main-is:          Main.hs
+    hs-source-dirs:   printk
+
+
+executable test-client
+    main-is:          Main.hs
+    build-depends:
+           base >=4.19 && <5
+         , network
+         , network-run
+         , bytestring
+         , process
+         , unix
+         , optparse-applicative
+    hs-source-dirs:   client
+    default-language: Haskell2010

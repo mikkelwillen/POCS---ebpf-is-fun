@@ -1,0 +1,30 @@
+cabal-version: 3.4
+name:          ebpf-linux-api
+version:       0.1.0.0
+license:       MIT
+license-file:  LICENSE
+build-type:    Simple
+
+library
+    exposed-modules:  Ebpf.LinuxAPI
+    hs-source-dirs:   src
+    default-language: Haskell2010
+    -- extra-include-dirs:  /usr/src/linux-headers-6.8.0-49-generic/include
+    -- cc-options:  -I/usr/include -I/usr/src/linux-headers-6.8.0-49-generic/include
+    build-depends:
+        base >=4.19.0.0 && <5,
+        bytestring >= 0.12 && < 0.13
+
+test-suite ebpf-linux-api-test
+    type:             exitcode-stdio-1.0
+    main-is:          Main.hs
+    hs-source-dirs:   test
+    default-language: Haskell2010
+    build-depends:
+        base,
+        tasty,
+        tasty-hunit,
+        unix,
+        bytestring,
+        ebpf-tools >=0.2 && <0.3,
+        ebpf-linux-api
