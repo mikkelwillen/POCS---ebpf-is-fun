@@ -1,0 +1,9 @@
+.DS_Store
+	.idea
+	*.log
+	tmp/
+
+
+funebpf/.vagrant
+funebpf/dist-newstyle/build/
+funebpf/dist-newstyle/packagedb/

@@ -1,0 +1,17 @@
+[package]
+name = "test-ebpf"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+test-common = { path = "../test-common" }
+
+aya-ebpf = { workspace = true }
+aya-log-ebpf = { workspace = true }
+
+[build-dependencies]
+which = { workspace = true }
+
+[[bin]]
+name = "test"
+path = "src/main.rs"
