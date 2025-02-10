@@ -1,0 +1,10 @@
+/home/carolineak/Desktop/POCS---ebpf-is-fun/aya/test/target/release/deps/libaya_ebpf_bindings-ab0daef5c7db7ffd.rmeta: /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/lib.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/mod.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/bindings.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/helpers.rs
+
+/home/carolineak/Desktop/POCS---ebpf-is-fun/aya/test/target/release/deps/libaya_ebpf_bindings-ab0daef5c7db7ffd.rlib: /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/lib.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/mod.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/bindings.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/helpers.rs
+
+/home/carolineak/Desktop/POCS---ebpf-is-fun/aya/test/target/release/deps/aya_ebpf_bindings-ab0daef5c7db7ffd.d: /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/lib.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/mod.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/bindings.rs /home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/helpers.rs
+
+/home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/lib.rs:
+/home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/mod.rs:
+/home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/bindings.rs:
+/home/carolineak/.cargo/registry/src/index.crates.io-6f17d22bba15001f/aya-ebpf-bindings-0.1.1/src/x86_64/helpers.rs:
