@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
-members = ["test", "test-common", "test-ebpf"]
-default-members = ["test", "test-common"]
+members = ["simple-program", "simple-program-common", "simple-program-ebpf"]
+default-members = ["simple-program", "simple-program-common"]
 
 [workspace.dependencies]
 aya = { version = "0.13.1", default-features = false }
@@ -21,6 +21,6 @@ log = { version = "0.4.22", default-features = false }
 tokio = { version = "1.40.0", default-features = false }
 which = { version = "6.0.0", default-features = false }
 
-[profile.release.package.test-ebpf]
+[profile.release.package.simple-program-ebpf]
 debug = 2
 codegen-units = 1

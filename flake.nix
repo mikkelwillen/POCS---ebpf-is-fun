@@ -1,8 +1,7 @@
 {
-  description = "Development environment for a project with vagrant, make, haskell and cabal";
+  description = "Development environment for fun eBPF and aya";
 
   inputs = {
-    # You can choose a specific channel or commit for reproducibility.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -13,6 +12,9 @@
         pkgs = import nixpkgs { inherit system; };
       in {
         devShells= {
+          shellHook = ''
+              fish
+            '';
 
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
@@ -24,6 +26,10 @@
           };
 
           aya = pkgs.mkShell {
+            shellHook = ''
+              fish
+            '';
+
             buildInputs = with pkgs; [
               rustup
               llvm

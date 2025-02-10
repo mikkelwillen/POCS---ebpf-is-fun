@@ -1,10 +1,10 @@
 [package]
-name = "test-ebpf"
+name = "simple-program-ebpf"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-test-common = { path = "../test-common" }
+simple-program-common = { path = "../simple-program-common" }
 
 aya-ebpf = { workspace = true }
 aya-log-ebpf = { workspace = true }
@@ -13,5 +13,5 @@ aya-log-ebpf = { workspace = true }
 which = { workspace = true }
 
 [[bin]]
-name = "test"
+name = "simple-program"
 path = "src/main.rs"

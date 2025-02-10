@@ -1,10 +1,10 @@
 [package]
-name = "test"
+name = "simple-program"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-test-common = { path = "../test-common", features = ["user"] }
+simple-program-common = { path = "../simple-program-common", features = ["user"] }
 
 anyhow = { workspace = true, default-features = true }
 aya = { workspace = true }
@@ -14,6 +14,7 @@ libc = { workspace = true }
 log = { workspace = true }
 tokio = { workspace = true, features = ["macros", "rt", "rt-multi-thread", "net", "signal"] }
 
+clap = { workspace = true, features = ["derive"] }
 [build-dependencies]
 anyhow = { workspace = true }
 aya-build = { workspace = true }
@@ -29,8 +30,8 @@ aya-build = { workspace = true }
 # Finally note that *any* usage of `artifact = ...` in *any* Cargo.toml in the workspace breaks
 # workflows with stable cargo; stable cargo outright refuses to load manifests that use unstable
 # features.
-test-ebpf = { path = "../test-ebpf" }
+simple-program-ebpf = { path = "../simple-program-ebpf" }
 
 [[bin]]
-name = "test"
+name = "simple-program"
 path = "src/main.rs"
