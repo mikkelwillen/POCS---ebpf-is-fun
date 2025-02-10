@@ -33,6 +33,7 @@
             buildInputs = with pkgs; [
               rustup
               llvm
+              bpftool
               pkg-config
               openssl
             ];
