@@ -27,8 +27,6 @@ pub fn xdp_firewall(ctx: XdpContext) -> u32 {
 }
 
 #[inline(always)] //
-
-
 fn ptr_at<T>(ctx: &XdpContext, offset: usize) -> Result<*const T, ()> {
     let start = ctx.data();
     let end = ctx.data_end();
@@ -43,8 +41,6 @@ fn ptr_at<T>(ctx: &XdpContext, offset: usize) -> Result<*const T, ()> {
 
 fn try_xdp_firewall(ctx: XdpContext) -> Result<u32, ()> {
     let ethhdr: *const EthHdr = ptr_at(&ctx, 0)?; //
-
-
     match unsafe { (*ethhdr).ether_type } {
         EtherType::Ipv4 => {}
         _ => return Ok(xdp_action::XDP_PASS),
@@ -68,8 +64,6 @@ fn try_xdp_firewall(ctx: XdpContext) -> Result<u32, ()> {
     };
 
     //
-
-
     info!(&ctx, "SRC IP: {:i}, SRC PORT: {}", source_addr, source_port);
 
     Ok(xdp_action::XDP_PASS)
