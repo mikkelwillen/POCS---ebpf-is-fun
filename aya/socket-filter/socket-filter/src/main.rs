@@ -30,7 +30,7 @@ async fn main() -> anyhow::Result<()> {
         // This can happen if you remove all log statements from your eBPF program.
         warn!("failed to initialize eBPF logger: {}", e);
     }
-    let listener = std::net::TcpListener::bind("localhost:0")?;
+    let listener = std::net::UdpSocket::bind("localhost:12345")?;
     let prog: &mut SocketFilter = ebpf.program_mut("socket_filter").unwrap().try_into()?;
     prog.load()?;
     prog.attach(&listener)?;

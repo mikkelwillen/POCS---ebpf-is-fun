@@ -19,7 +19,6 @@
           default = pkgs.mkShell {
             buildInputs = with pkgs; [
               vagrant             # Vagrant for virtual machine management
-              gnumake                # GNU Make for build automation
               haskellPackages.ghc # The Glasgow Haskell Compiler
               haskellPackages.cabal-install # Cabal for building Haskell projects
             ];
