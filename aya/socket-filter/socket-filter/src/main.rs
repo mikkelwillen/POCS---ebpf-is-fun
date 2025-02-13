@@ -1,44 +1,29 @@
 use aya::programs::SocketFilter;
-#[rustfmt::skip]
-use log::{debug, warn};
-use tokio::signal;
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    env_logger::init();
-
-    // Bump the memlock rlimit. This is needed for older kernels that don't use the
-    // new memcg based accounting, see https://lwn.net/Articles/837122/
-    let rlim = libc::rlimit {
-        rlim_cur: libc::RLIM_INFINITY,
-        rlim_max: libc::RLIM_INFINITY,
-    };
-    let ret = unsafe { libc::setrlimit(libc::RLIMIT_MEMLOCK, &rlim) };
-    if ret != 0 {
-        debug!("remove limit on locked memory failed, ret is: {}", ret);
-    }
-
-    // This will include your eBPF object file as raw bytes at compile-time and load it at
-    // runtime. This approach is recommended for most real-world use cases. If you would
-    // like to specify the eBPF program at runtime rather than at compile-time, you can
-    // reach for `Bpf::load_file` instead.
+fn main() -> anyhow::Result<()> {
+    // Load eBPF bytecode
     let mut ebpf = aya::Ebpf::load(aya::include_bytes_aligned!(concat!(
         env!("OUT_DIR"),
         "/socket-filter"
     )))?;
-    if let Err(e) = aya_log::EbpfLogger::init(&mut ebpf) {
-        // This can happen if you remove all log statements from your eBPF program.
-        warn!("failed to initialize eBPF logger: {}", e);
-    }
-    let listener = std::net::UdpSocket::bind("localhost:12345")?;
+
+    // Bind UDP socket to port 12345 on localhost
+    let socket = std::net::UdpSocket::bind("127.0.0.1:12345")?;
+
+    // Load the socket_filter program, and attach to socket
     let prog: &mut SocketFilter = ebpf.program_mut("socket_filter").unwrap().try_into()?;
     prog.load()?;
-    prog.attach(&listener)?;
+    prog.attach(&socket)?;
 
-    let ctrl_c = signal::ctrl_c();
-    println!("Waiting for Ctrl-C...");
-    ctrl_c.await?;
-    println!("Exiting...");
+    // Debug msg
+    println!("Ready to receive");
+
+    // Receive msg and print
+    let mut buf = [0; 100];
+    match socket.recv(&mut buf) {
+        Ok(received) => println!("received {received} bytes {:?}", &buf[..received]),
+        Err(e) => println!("recv function failed: {e:?}"),
+    }
 
     Ok(())
 }

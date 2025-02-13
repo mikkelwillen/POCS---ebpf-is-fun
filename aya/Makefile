@@ -22,15 +22,23 @@ generate:
 build: check-p
 	cargo build --manifest-path $(p)Cargo.toml
 
-# Run program at target
-run: check-p
+# Run xdp program at target
+runxdp: check-p
 	cargo run --manifest-path $(p)Cargo.toml --config 'target."cfg(all())".runner="sudo -E"' -- \
   --iface $(i)
 
-# Run program at target with log
-run-log: check-p
+# Run xdp program at target with log
+runxdp-log: check-p
 	RUST_LOG=info cargo run --manifest-path $(p)Cargo.toml --config 'target."cfg(all())".runner="sudo -E"' -- \
   --iface $(i)
+
+# Run socket program at target
+runsoc : check-p
+	cargo run --manifest-path $(p)Cargo.toml --config 'target."cfg(all())".runner="sudo -E"'
+
+# Run socket program at target with log
+runsoc-log : check-p
+	RUST_LOG=info cargo run --manifest-path $(p)Cargo.toml --config 'target."cfg(all())".runner="sudo -E"'
 
 # Clean all build files
 clean:

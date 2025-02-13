@@ -4,10 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-socket-filter-common = { path = "../socket-filter-common" }
+# socket-filter-common = { path = "../socket-filter-common" }
 
 aya-ebpf = { workspace = true }
-aya-log-ebpf = { workspace = true }
 
 [build-dependencies]
 which = { workspace = true }
