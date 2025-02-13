@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true, default-features = true }
 aya = { workspace = true }
-libc = { workspace = true }
+# libc = { workspace = true }
 
 [build-dependencies]
 anyhow = { workspace = true }

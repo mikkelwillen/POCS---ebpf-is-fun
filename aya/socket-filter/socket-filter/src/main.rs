@@ -18,7 +18,7 @@ fn main() -> anyhow::Result<()> {
     // Debug msg
     println!("Ready to receive");
 
-    // Receive msg and print
+    // Receive msg(s) and print
     let mut buf = [0; 100];
     match socket.recv(&mut buf) {
         Ok(received) => println!("received {received} bytes {:?}", &buf[..received]),
