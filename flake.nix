@@ -12,11 +12,11 @@
         pkgs = import nixpkgs { inherit system; };
       in {
         devShells= {
-          shellHook = ''
+          default = pkgs.mkShell {
+            shellHook = ''
               fish
             '';
 
-          default = pkgs.mkShell {
             buildInputs = with pkgs; [
               vagrant             # Vagrant for virtual machine management
               haskellPackages.ghc # The Glasgow Haskell Compiler
