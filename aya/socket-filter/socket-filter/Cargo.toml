@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = { workspace = true, default-features = true }
 aya = { workspace = true }
+clap = { workspace = true, features = ["derive"] }
 # libc = { workspace = true }
 
 [build-dependencies]

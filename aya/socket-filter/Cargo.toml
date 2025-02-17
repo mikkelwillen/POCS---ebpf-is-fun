@@ -7,7 +7,7 @@ default-members = ["socket-filter"]
 aya = { version = "0.13.1", default-features = false }
 aya-build = { version = "0.1.2", default-features = false }
 aya-ebpf = { version = "0.1.1", default-features = false }
-
+clap = { version = "4.5.20", default-features = false, features = ["std"] }
 anyhow = { version = "1", default-features = false }
 which = { version = "6.0.0", default-features = false }
 
