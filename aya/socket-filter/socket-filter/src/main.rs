@@ -2,6 +2,10 @@ use aya::programs::SocketFilter;
 use std::collections::HashMap;
 use std::io;
 
+use aya::maps::PerCpuArray;
+use aya::maps::PerCpuValues;
+use aya::Pod;
+
 // Command Line Argument Parsing
 use clap::Parser;
 
@@ -93,6 +97,14 @@ fn serve( socket: &std::net::UdpSocket
         }
     }
 }
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct Buf {
+    pub buf: [u8; 1500], // Buffer to store packet data
+}
+
+// Implement Pod trait so Aya c
+unsafe impl Pod for Buf {}
 
 fn main() -> anyhow::Result<()> {
     // Parse command line arguments
@@ -111,6 +123,7 @@ fn main() -> anyhow::Result<()> {
     let socket = std::net::UdpSocket::bind("127.0.0.1:12345")?;
     logging(verbose, &format!("UdpSocket bound to {:?}", socket.local_addr().unwrap()));
 
+
     // Load the socket_filter program, and attach to socket
     let prog: &mut SocketFilter = ebpf.program_mut("socket_filter").unwrap().try_into()?;
     prog.load()?;
@@ -122,6 +135,15 @@ fn main() -> anyhow::Result<()> {
     // Start the server
     logging(verbose, "Starting server");
     serve(&socket, &mut state, verbose, capacity)?;
+
+    let array = PerCpuArray::try_from(ebpf.map_mut("PKT_PRT_ARRAY").unwrap())?;
+
+    logging(verbose, "Printing contents of array");
+    let print_array: PerCpuValues<Buf> = array.get(&0, 0)?;
+    // Print contents of the array
+    for i in 0..print_array.len() {
+        println!("{}: {:?}", i, print_array.get(i).unwrap().buf);
+    }
 
     Ok(())
 }
