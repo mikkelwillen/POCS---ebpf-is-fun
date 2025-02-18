@@ -3,7 +3,10 @@
 
 // Import the `socket_filter` macro used to specify the entry point of the eBPF program
 // Import the `SkBuffContext` struct with metadata and payload
-use aya_ebpf::{macros::socket_filter, programs::SkBuffContext};
+use aya_ebpf::{
+    macros::socket_filter,
+    programs::SkBuffContext
+};
 
 // Filter that lets all packets through
 #[socket_filter]
