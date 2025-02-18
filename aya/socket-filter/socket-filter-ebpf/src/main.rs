@@ -10,13 +10,13 @@ use aya_ebpf::{macros::socket_filter, programs::SkBuffContext};
 pub fn socket_filter(ctx: SkBuffContext) -> i64 {
     match try_socket_filter(ctx) {
         0 => -1,
-        _ => -1,
+        _ => 0,
     }
 }
 
 // Helper function
 fn try_socket_filter(ctx: SkBuffContext) -> i64 {
-    1
+    0
 }
 
 // Simple panic handler
