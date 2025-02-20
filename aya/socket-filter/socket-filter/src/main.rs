@@ -97,6 +97,7 @@ fn serve( socket: &std::net::UdpSocket
         }
     }
 }
+
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct Buf {
