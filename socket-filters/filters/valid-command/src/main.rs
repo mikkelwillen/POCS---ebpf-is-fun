@@ -12,12 +12,12 @@ use aya_ebpf::{
 #[socket_filter]
 pub fn socket_filter(ctx: SkBuffContext) -> i64 {
     match try_socket_filter(ctx) {
-        Ok(ret) => ret,
-        Err(_) => 0
+        Ok(_) => -1,
+        Err(_) => 0,
     }
 }
 
-pub fn try_socket_filter(ctx: SkBuffContext) -> Result<i64, ()> {
+pub fn try_socket_filter(ctx: SkBuffContext) -> Result<(), ()> {
     // Get package length
     let len = ctx.len();
     if len == 0 {
@@ -28,7 +28,7 @@ pub fn try_socket_filter(ctx: SkBuffContext) -> Result<i64, ()> {
     let mut command: [u8; 6] = [0; 6];
 
     // Copy the command to the buffer
-    ctx.load_bytes(8, &mut command[..6 as usize]).map_err(|_| ())?;
+    ctx.load_bytes(8, &mut command[..5 as usize]).map_err(|_| ())?;
 
     // Check if the command is valid
     // match command {
@@ -37,7 +37,7 @@ pub fn try_socket_filter(ctx: SkBuffContext) -> Result<i64, ()> {
     //     _ =>
     //         Err(())
     // }
-    Ok(len.into())
+    Ok(())
 }
 
 // Simple panic handler
