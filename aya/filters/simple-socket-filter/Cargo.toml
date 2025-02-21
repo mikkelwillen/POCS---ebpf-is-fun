@@ -10,5 +10,8 @@ aya-ebpf = { workspace = true }
 which = { workspace = true }
 
 [[bin]]
-name = "socket-filter"
+name = "simple-socket-filter"
 path = "src/main.rs"
+
+[profile.release]
+panic = "abort"

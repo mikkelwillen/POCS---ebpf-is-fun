@@ -13,6 +13,16 @@ use aya_ebpf::{
 pub fn socket_filter(ctx: SkBuffContext) -> i64 {
     -1
 }
+//     match try_socket_filter(ctx) {
+//         0 => -1,
+//         _ => 0,
+//     }
+// }
+
+// Helper function
+// fn try_socket_filter(ctx: SkBuffContext) -> i64 {
+//     0
+// }
 
 // Simple panic handler
 #[cfg(not(test))]

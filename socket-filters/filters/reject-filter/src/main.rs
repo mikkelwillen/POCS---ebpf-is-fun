@@ -11,7 +11,7 @@ use aya_ebpf::{
 // Filter that lets all packets through
 #[socket_filter]
 pub fn socket_filter(ctx: SkBuffContext) -> i64 {
-    -1
+    0
 }
 
 // Simple panic handler

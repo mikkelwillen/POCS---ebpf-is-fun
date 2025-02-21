@@ -10,16 +10,8 @@ use aya_ebpf::{
 
 // Filter that lets all packets through
 #[socket_filter]
-pub fn socket_filter(ctx: SkBuffContext) -> i64 {
-    match try_socket_filter(ctx) {
-        0 => -1,
-        _ => 0,
-    }
-}
-
-// Helper function
-fn try_socket_filter(ctx: SkBuffContext) -> i64 {
-    0
+pub fn socket_filter(_ctx: SkBuffContext) -> i64 {
+    -1
 }
 
 // Simple panic handler

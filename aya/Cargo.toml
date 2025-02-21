@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [ "server"
-	 	  , "filters/*"]
+	 	  , "filters/simple-socket-filter"]
 default-members = ["server"]
 
 [workspace.dependencies]
