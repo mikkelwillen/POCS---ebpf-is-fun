@@ -18,12 +18,26 @@ pub fn socket_filter(ctx: SkBuffContext) -> i64 {
 }
 
 pub fn try_socket_filter(ctx: SkBuffContext) -> Result<i64, ()> {
-    // Offset to the start of the payload
-    let payload_offset = 8;
+    // Get package length
+    let len = ctx.len();
+    if len == 0 {
+        return Err(());
+    }
 
-    // Get the length of the packet
-    let len = ctx[4..6].load::<u8>().unwrap() as usize;
-    Ok(len)
+    // Buffer to store the package
+    let mut command: [u8; 6] = [0; 6];
+
+    // Copy the command to the buffer
+    ctx.load_bytes(8, &mut command[..6 as usize]).map_err(|_| ())?;
+
+    // Check if the command is valid
+    // match command {
+    //     [0x50, 0x55, 0x54, _, _ ,_ ] =>
+    //         Ok(len.into()),
+    //     _ =>
+    //         Err(())
+    // }
+    Ok(len.into())
 }
 
 // Simple panic handler
