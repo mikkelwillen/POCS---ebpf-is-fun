@@ -85,8 +85,10 @@ fn serve( socket: &std::net::UdpSocket
                         }
                     }
                     // Case for invalid messages
-                    None => // logging(verbose, "Received invalid message")
-                        (),
+                    None => {
+                        logging(verbose, "Received invalid message");
+                        ()
+                    }
                 }
             }
             Err(e) => println!("recv function failed: {:?}", e),
@@ -105,7 +107,7 @@ fn main() -> anyhow::Result<()> {
         env!("OUT_DIR"),
         "/socket-filter"
     )))?;
-    logging(verbose, "Loaded eBPF bytecode");
+    logging(verbose, &format!("Loaded eBPF bytecode from {:?}", env!("OUT_DIR")));
 
     // Bind UDP socket to port 12345 on localhost
     let socket = std::net::UdpSocket::bind("127.0.0.1:12345")?;
