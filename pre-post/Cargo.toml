@@ -1,0 +1,18 @@
+[workspace]
+resolver = "2"
+members = [ "server_lib"
+	 	  , "filters/*"
+		  , "servers/*"]
+default-members = ["servers/simple-server"]
+
+[workspace.dependencies]
+aya = { version = "0.13.1", default-features = false }
+aya-build = { version = "0.1.2", default-features = false }
+aya-ebpf = { version = "0.1.1", default-features = false }
+clap = { version = "4.5.20", default-features = false, features = ["std"] }
+anyhow = { version = "1", default-features = false }
+which = { version = "6.0.0", default-features = false }
+
+[profile.release.package.simple-socket-filter]
+debug = 2
+codegen-units = 1

@@ -1,0 +1,19 @@
+[package]
+name = "server_lib"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[lib]
+name = "server_lib"
+path = "src/lib.rs"
+
+[build-dependencies]
+anyhow = { workspace = true }
+aya-build = { workspace = true }
+simple-socket-filter = { path = "../filters/simple-socket-filter" }
+
+[dependencies]
+anyhow = { workspace = true, default-features = true }
+aya = { workspace = true }
+clap = { workspace = true, features = ["derive"] }
