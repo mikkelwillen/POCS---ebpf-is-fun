@@ -8,4 +8,5 @@ server_lib = { path = "../../server_lib" }
 
 [dependencies]
 server_lib = { path = "../../server_lib" }
+aya = { workspace = true }
 anyhow = { workspace = true }

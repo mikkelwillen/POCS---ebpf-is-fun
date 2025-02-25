@@ -19,8 +19,8 @@ struct Config {
 }
 
 // Logging function for when verbose flag is set
-fn logging( verbose: bool
-          , msg: &str) {
+pub fn logging( verbose: bool
+              , msg: &str) {
     if verbose {
         println!("{}", msg);
     }
@@ -97,7 +97,19 @@ fn serve( socket: &std::net::UdpSocket
 }
 
 pub fn run_server<F, G>( pre: F
-                   , post: G) -> anyhow::Result<()> {
+                       , post: G
+                       ) -> anyhow::Result<()>
+    where
+        F: Fn( &std::net::UdpSocket
+             , &mut std::collections::HashMap<u32, i64>
+             , &mut aya::Ebpf
+             , bool
+             , usize),
+        G: Fn( &std::net::UdpSocket
+             , &mut std::collections::HashMap<u32, i64>
+             , &mut aya::Ebpf
+             , bool
+             , usize), {
     // Parse command line arguments
     let config= Config::parse();
     let verbose = config.verbose;
@@ -122,9 +134,15 @@ pub fn run_server<F, G>( pre: F
     // Create the state map
     let mut state = HashMap::<u32, i64>::new();
 
+    // Pre function
+    pre(&socket, &mut state, &mut ebpf, verbose, capacity);
+
     // Start the server
     logging(verbose, "Starting server");
     serve(&socket, &mut state, verbose, capacity)?;
+
+    // Post function
+    post(&socket, &mut state, &mut ebpf, verbose, capacity);
 
     Ok(())
 }

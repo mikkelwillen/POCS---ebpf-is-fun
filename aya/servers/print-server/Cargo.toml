@@ -1,0 +1,12 @@
+[package]
+name = "print-server"
+version = "0.1.0"
+edition = "2021"
+
+[build-dependencies]
+server_lib = { path = "../../server_lib" }
+
+[dependencies]
+server_lib = { path = "../../server_lib" }
+aya = { workspace = true }
+anyhow = { workspace = true }
