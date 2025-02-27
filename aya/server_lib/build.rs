@@ -12,11 +12,11 @@ fn main() -> anyhow::Result<()> {
         .exec()
         .context("MetadataCommand::exec")?;
 
-    // Find the specified eBPF package
+    // Find the specified eBPF filter
     let ebpf_package = packages
         .into_iter()
         .find(|pkg| pkg.name == filter_name)
-        .ok_or_else(|| anyhow!("{} package not found", filter_name))?;
+        .ok_or_else(|| anyhow!("{} filter not found", filter_name))?;
 
     // Build the eBPF program
     aya_build::build_ebpf([ebpf_package])
