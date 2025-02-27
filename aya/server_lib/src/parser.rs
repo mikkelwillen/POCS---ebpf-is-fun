@@ -31,7 +31,7 @@ pub fn parse_message(request: &[u8]) -> Option<Message> {
 			let key = u32::from_le_bytes(rest[0..4].try_into().ok()?);
 			Some(Message::Get(key))
 		},
-		"DEL" => {
+		"DELETE" => {
 			if rest.len() < 4 {
 				return None;
 			}

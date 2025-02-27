@@ -6,15 +6,19 @@ use std::io;
 use clap::Parser;
 
 mod parser;
+use parser:: {
+    Message,
+    parse_message,
+};
 
 // Command line arguments
 #[derive(Parser)]
 #[clap(version = "1.0")]
-struct Config {
-    #[clap(short, long, default_value = "true")]
+struct CommandLineArgs {
+    #[clap(short, long)]
     verbose: bool,
 
-    #[clap(short, long, default_value = "100000")]
+    #[clap(short, long, default_value_t = 100000)]
     capacity: usize,
 }
 
@@ -28,12 +32,12 @@ pub fn logging( verbose: bool
 
 // Process a message and update the state map
 fn process_message( state: &mut HashMap<u32, i64>
-                  , msg: parser::Message
+                  , msg: Message
                   , verbose: bool
                   , capacity: usize
                   ) -> Option<Vec<u8>> {
     match msg {
-        parser::Message::Put(key, value) => {
+        Message::Put(key, value) => {
             if state.len() < capacity || state.contains_key(&key) {
                 *state.entry(key).or_insert(0) += value;
             } else {
@@ -41,14 +45,14 @@ fn process_message( state: &mut HashMap<u32, i64>
             }
             None
         }
-        parser::Message::Get(key) => {
+        Message::Get(key) => {
             state.get(&key).map(|&count| count.to_string().into_bytes())
         }
-        parser::Message::Delete(key) => {
+        Message::Delete(key) => {
             state.remove(&key);
             None
         }
-        parser::Message::Stop => {
+        Message::Stop => {
             logging(verbose, "process_message should not receive Stop message");
             None
         }
@@ -68,10 +72,10 @@ fn serve( socket: &std::net::UdpSocket
         match socket.recv_from(&mut buf) {
             Ok((num_bytes, sender)) => {
                 // Parse the recieved message in buf
-                let msg_option = parser::parse_message(&buf[..num_bytes]);
+                let msg_option = parse_message(&buf[..num_bytes]);
                 match msg_option {
                     // Stop the server if we receive a Stop message
-                    Some(parser::Message::Stop) => {
+                    Some(Message::Stop) => {
                         logging(verbose, "Stopping server");
                         break Ok(());
                     }
@@ -111,9 +115,10 @@ pub fn run_server<F, G>( pre: F
              , bool
              , usize), {
     // Parse command line arguments
-    let config= Config::parse();
-    let verbose = config.verbose;
-    let capacity = config.capacity;
+    let args = CommandLineArgs::parse();
+
+    let verbose = args.verbose;
+    let capacity = args.capacity;
 
     // Load eBPF bytecode
     let mut ebpf = aya::Ebpf::load(aya::include_bytes_aligned!(concat!(
