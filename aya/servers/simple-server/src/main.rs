@@ -10,7 +10,7 @@ fn main() -> anyhow::Result<()> {
                    , _ebpf: &mut Ebpf
                    , _verbose: bool
                    , _capacity: usize | {
-        println!("Pre hook: Initializing additional resources...");
+        println!("Pre hook");
         // Additional instance-specific pre-processing can go here.
     };
 
@@ -19,7 +19,7 @@ fn main() -> anyhow::Result<()> {
                     , _ebpf: &mut Ebpf
                     , _verbose: bool
                     , _capacity: usize | {
-        println!("Post hook: Cleaning up instance-specific resources...");
+        println!("Post hook");
         // Additional instance-specific post-processing can go here.
     };
 

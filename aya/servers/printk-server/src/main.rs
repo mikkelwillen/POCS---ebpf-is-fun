@@ -18,20 +18,20 @@ unsafe impl Pod for Buf {}
 
 fn main() -> anyhow::Result<()> {
     // Define only the pre and post hooks specific to this server instance.
-    let pre_hook = | socket: &UdpSocket
-                   , state: &mut HashMap<u32, i64>
-                   , ebpf: &mut Ebpf
-                   , verbose: bool
-                   , capacity: usize | {
+    let pre_hook = | _socket: &UdpSocket
+                   , _state: &mut HashMap<u32, i64>
+                   , _ebpf: &mut Ebpf
+                   , _verbose: bool
+                   , _capacity: usize | {
         println!("Pre hook");
         // Additional instance-specific pre-processing can go here.
     };
 
-    let post_hook = | socket: &UdpSocket
-                    , state: &mut HashMap<u32, i64>
-                    , ebpf: &mut Ebpf
-                    , verbose: bool
-                    , capacity: usize | {
+    let post_hook = | _socket: &UdpSocket
+                    , _state: &mut HashMap<u32, i64>
+                    , _ebpf: &mut Ebpf
+                    , _verbose: bool
+                    , _capacity: usize | {
         println!("Post hook");
     };
 

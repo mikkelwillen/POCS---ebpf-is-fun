@@ -33,13 +33,13 @@ pub fn try_socket_filter(ctx: SkBuffContext) -> Result<(), ()> {
     ctx.load_bytes(0, &mut command[..read_len as usize]).map_err(|_| ())?;
 
     // Check if the command is valid
-    if command[8] == 0x50
-    && command[9] == 0x55
-    && command[10] == 0x54 {
+    if command[8] == b'P'
+    && command[9] == b'U'
+    && command[10] == b'T' {
         Ok(())
-    } else if command[8] == 0x47
-           && command[9] == 0x45
-           && command[10] == 0x54 {
+    } else if command[8] == b'G'
+           && command[9] == b'E'
+           && command[10] == b'T' {
         Ok(())
     } else if command[8] == 0x44
            && command[9] == 0x45
