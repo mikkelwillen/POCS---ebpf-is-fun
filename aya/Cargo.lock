@@ -213,6 +213,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "count-filter"
+version = "0.1.0"
+dependencies = [
+ "aya-ebpf",
+ "which",
+]
+
+[[package]]
+name = "count-server"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "aya",
+ "server_lib",
+]
+
+[[package]]
 name = "crc32fast"
 version = "1.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"

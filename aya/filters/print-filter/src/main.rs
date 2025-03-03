@@ -19,7 +19,7 @@ pub struct Buf {
 #[socket_filter]
 pub fn socket_filter(ctx: SkBuffContext) -> i64 {
     match try_socket_filter(ctx) {
-        Ok() => -1, // Allow packet through
+        Ok(_) => -1, // Allow packet through
         Err(_) => 0, // Drop packet (error case)
     }
 }
@@ -36,7 +36,7 @@ fn try_socket_filter(ctx: SkBuffContext) -> Result<(), ()> {
 
     // Load only available bytes, up to 500 bytes max
     ctx.load_bytes(0, &mut temp_buf[..read_len as usize])
-        .maperr(|| ())?;
+        .map_err(|_| ())?;
 
     // Retrieve the eBPF map entry
     let buf = unsafe {

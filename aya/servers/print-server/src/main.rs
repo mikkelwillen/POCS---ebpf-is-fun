@@ -25,23 +25,26 @@ fn main() -> anyhow::Result<()> {
                    , _capacity: usize | {
         println!("Pre hook");
         // Additional instance-specific pre-processing can go here.
+
+        Ok(())
     };
 
     let post_hook = | _socket: &UdpSocket
                     , _state: &mut HashMap<u32, i64>
                     , ebpf: &mut Ebpf
-                    , _verbose: bool
+                    , verbose: bool
                     , _capacity: usize | {
         println!("Post hook");
         let array = PerCpuArray::try_from(ebpf.map_mut("PKT_PRT_ARRAY").unwrap())?;
 
-        // logging(verbose, "Printing contents of array");
+        logging(verbose, "Printing contents of array");
 
-        // let print_array: PerCpuValues<Buf> = array.get(&0, 0)?;
-        // // Print contents of the array
-        // for i in 0..print_array.len() {
-        //     println!("{}: {:?}", i, print_array.get(i).unwrap().buf);
-        // };
+        let print_array: PerCpuValues<Buf> = array.get(&0, 0)?;
+        // Print contents of the array
+        for i in 0..print_array.len() {
+            println!("{}: {:?}", i, print_array.get(i).unwrap().buf);
+        };
+        Ok(())
     };
     run_server(pre_hook, post_hook)
 }

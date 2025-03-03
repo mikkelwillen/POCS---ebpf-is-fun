@@ -108,12 +108,14 @@ pub fn run_server<F, G>( pre: F
              , &mut std::collections::HashMap<u32, i64>
              , &mut aya::Ebpf
              , bool
-             , usize),
+             , usize)
+             -> anyhow::Result<()>,
         G: Fn( &std::net::UdpSocket
              , &mut std::collections::HashMap<u32, i64>
              , &mut aya::Ebpf
              , bool
-             , usize), {
+             , usize)
+             -> anyhow::Result<()> {
     // Parse command line arguments
     let args = CommandLineArgs::parse();
 
@@ -140,14 +142,18 @@ pub fn run_server<F, G>( pre: F
     let mut state = HashMap::<u32, i64>::new();
 
     // Pre function
-    pre(&socket, &mut state, &mut ebpf, verbose, capacity);
+    if let Err(e) = pre(&socket, &mut state, &mut ebpf, verbose, capacity) {
+        eprintln!("Pre function failed: {:?}", e);
+    }
 
     // Start the server
     logging(verbose, "Starting server");
     serve(&socket, &mut state, verbose, capacity)?;
 
     // Post function
-    post(&socket, &mut state, &mut ebpf, verbose, capacity);
+    if let Err(e) = post(&socket, &mut state, &mut ebpf, verbose, capacity) {
+        eprintln!("Post function failed: {:?}", e);
+    }
 
     Ok(())
 }

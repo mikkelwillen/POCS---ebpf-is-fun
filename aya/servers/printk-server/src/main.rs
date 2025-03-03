@@ -25,6 +25,8 @@ fn main() -> anyhow::Result<()> {
                    , _capacity: usize | {
         println!("Pre hook");
         // Additional instance-specific pre-processing can go here.
+
+        Ok(())
     };
 
     let post_hook = | _socket: &UdpSocket
@@ -33,6 +35,8 @@ fn main() -> anyhow::Result<()> {
                     , _verbose: bool
                     , _capacity: usize | {
         println!("Post hook");
+
+        Ok(())
     };
 
     run_server(pre_hook, post_hook)
