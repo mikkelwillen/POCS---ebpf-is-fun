@@ -8,9 +8,9 @@ use aya_ebpf::{
     programs::SkBuffContext
 };
 
-// Filter that lets all packets through
+// Filter that lest no packets through
 #[socket_filter]
-pub fn socket_filter(ctx: SkBuffContext) -> i64 {
+pub fn socket_filter(_ctx: SkBuffContext) -> i64 {
     0
 }
 

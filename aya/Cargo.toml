@@ -1,9 +1,8 @@
 [workspace]
 resolver = "2"
 members = [ "server_lib"
-	 	  		, "filters/*"
-		  		, "servers/*"]
-default-members = ["servers/simple-server"]
+	  , "filters/*"
+	  , "servers/*"]
 
 [workspace.dependencies]
 aya = { version = "0.13.1", default-features = false }

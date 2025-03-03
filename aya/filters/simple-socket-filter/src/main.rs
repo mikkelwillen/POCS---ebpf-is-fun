@@ -10,7 +10,7 @@ use aya_ebpf::{
 
 // Filter that lets all packets through
 #[socket_filter]
-pub fn socket_filter(ctx: SkBuffContext) -> i64 {
+pub fn socket_filter(_ctx: SkBuffContext) -> i64 {
     -1
 }
 

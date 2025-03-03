@@ -33,25 +33,13 @@ pub fn try_socket_filter(ctx: SkBuffContext) -> Result<(), ()> {
     ctx.load_bytes(0, &mut command[..read_len as usize]).map_err(|_| ())?;
 
     // Check if the command is valid
-    if command[8] == b'P'
-    && command[9] == b'U'
-    && command[10] == b'T' {
+    if command[8..11] == *b"PUT"{
         Ok(())
-    } else if command[8] == b'G'
-           && command[9] == b'E'
-           && command[10] == b'T' {
+    } else if command[8..11] == *b"GET" {
         Ok(())
-    } else if command[8] == 0x44
-           && command[9] == 0x45
-           && command[10] == 0x4C
-           && command[11] == 0x45
-           && command[12] == 0x54
-           && command[13] == 0x45 {
+    } else if command[8..14] == *b"DELETE" {
         Ok(())
-    } else if command[8] == 0x53
-           && command[9] == 0x54
-           && command[10] == 0x4F
-           && command[11] == 0x50 {
+    } else if command[8..12] == *b"STOP" {
         Ok(())
     } else {
         Err(())
