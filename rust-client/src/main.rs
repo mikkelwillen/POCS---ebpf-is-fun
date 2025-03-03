@@ -94,7 +94,7 @@ fn frey(socket: &UdpSocket, addr: &SocketAddr, verbose: bool, percent: usize) {
 	}
 
 	send_get_cmd(socket, addr, verbose);
-	send_stop_cmd(socket, addr, verbose);
+	// send_stop_cmd(socket, addr, verbose);
 }
 
 fn main() {
