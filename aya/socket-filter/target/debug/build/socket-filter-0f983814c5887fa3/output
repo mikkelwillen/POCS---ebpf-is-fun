@@ -1,0 +1,14 @@
+cargo:rerun-if-changed=/home/carolineak/Desktop/POCS---ebpf-is-fun/aya/socket-filter/socket-filter-ebpf
+cargo:warning=   Compiling socket-filter-ebpf v0.1.0 (/home/carolineak/Desktop/POCS---ebpf-is-fun/aya/socket-filter/socket-filter-ebpf)
+cargo:warning=warning: creating a shared reference to mutable static is discouraged
+cargo:warning=  --> socket-filter-ebpf/src/main.rs:47:19
+cargo:warning=   |
+cargo:warning=47 |         let ptr = BUF.get_ptr_mut(0).ok_or(())?;
+cargo:warning=   |                   ^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+cargo:warning=   |
+cargo:warning=   = note: for more information, see <https://doc.rust-lang.org/nightly/edition-guide/rust-2024/static-mut-references.html>
+cargo:warning=   = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+cargo:warning=   = note: `#[warn(static_mut_refs)]` on by default
+cargo:warning=
+cargo:warning=
+cargo:warning=    Finished `release` profile [optimized] target(s) in 0.34s

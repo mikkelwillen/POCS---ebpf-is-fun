@@ -23,12 +23,309 @@ STOP command sent
 
 --------------------------------------------------
 Filter: simple-socket-filter
-Percent: 1
-Packets: 10000
-Sending 9900 PUT commands
-Sending 100 BAD commands
+Percent: 25
+Packets: 100
+Sending 75 PUT commands
+Sending 25 BAD commands
 Sending GET command
-Received response: 9900
+Received response: 75
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 25
+Packets: 1000
+Sending 750 PUT commands
+Sending 250 BAD commands
+Sending GET command
+Received response: 750
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 50
+Packets: 100
+Sending 50 PUT commands
+Sending 50 BAD commands
+Sending GET command
+Received response: 50
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 50
+Packets: 1000
+Sending 500 PUT commands
+Sending 500 BAD commands
+Sending GET command
+Received response: 500
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 75
+Packets: 100
+Sending 25 PUT commands
+Sending 75 BAD commands
+Sending GET command
+Received response: 25
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 75
+Packets: 1000
+Sending 250 PUT commands
+Sending 750 BAD commands
+Sending GET command
+Received response: 250
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 99
+Packets: 100
+Sending 1 PUT commands
+Sending 99 BAD commands
+Sending GET command
+Received response: 1
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 99
+Packets: 1000
+Sending 10 PUT commands
+Sending 990 BAD commands
+Sending GET command
+No response from the server
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 1
+Packets: 100
+Sending 99 PUT commands
+Sending 1 BAD commands
+Sending GET command
+Received response: 99
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 1
+Packets: 1000
+Sending 990 PUT commands
+Sending 10 BAD commands
+Sending GET command
+Received response: 990
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 25
+Packets: 100
+Sending 75 PUT commands
+Sending 25 BAD commands
+Sending GET command
+Received response: 75
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 25
+Packets: 1000
+Sending 750 PUT commands
+Sending 250 BAD commands
+Sending GET command
+Received response: 750
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 50
+Packets: 100
+Sending 50 PUT commands
+Sending 50 BAD commands
+Sending GET command
+Received response: 50
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 50
+Packets: 1000
+Sending 500 PUT commands
+Sending 500 BAD commands
+Sending GET command
+Received response: 500
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 75
+Packets: 100
+Sending 25 PUT commands
+Sending 75 BAD commands
+Sending GET command
+Received response: 25
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 75
+Packets: 1000
+Sending 250 PUT commands
+Sending 750 BAD commands
+Sending GET command
+Received response: 250
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 99
+Packets: 100
+Sending 1 PUT commands
+Sending 99 BAD commands
+Sending GET command
+Received response: 1
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: valid-command
+Percent: 99
+Packets: 1000
+Sending 10 PUT commands
+Sending 990 BAD commands
+Sending GET command
+Received response: 10
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 1
+Packets: 100
+Sending 99 PUT commands
+Sending 1 BAD commands
+Sending GET command
+Received response: 99
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 1
+Packets: 1000
+Sending 990 PUT commands
+Sending 10 BAD commands
+Sending GET command
+Received response: 990
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 25
+Packets: 100
+Sending 75 PUT commands
+Sending 25 BAD commands
+Sending GET command
+Received response: 75
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 25
+Packets: 1000
+Sending 750 PUT commands
+Sending 250 BAD commands
+Sending GET command
+Received response: 750
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 50
+Packets: 100
+Sending 50 PUT commands
+Sending 50 BAD commands
+Sending GET command
+Received response: 50
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 50
+Packets: 1000
+Sending 500 PUT commands
+Sending 500 BAD commands
+Sending GET command
+Received response: 500
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 75
+Packets: 100
+Sending 25 PUT commands
+Sending 75 BAD commands
+Sending GET command
+Received response: 25
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 75
+Packets: 1000
+Sending 250 PUT commands
+Sending 750 BAD commands
+Sending GET command
+Received response: 250
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 99
+Packets: 100
+Sending 1 PUT commands
+Sending 99 BAD commands
+Sending GET command
+Received response: 1
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: robust-valid-command
+Percent: 99
+Packets: 1000
+Sending 10 PUT commands
+Sending 990 BAD commands
+Sending GET command
+Received response: 10
 Sending STOP command
 STOP command sent
 
