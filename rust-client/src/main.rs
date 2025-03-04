@@ -14,6 +14,9 @@ struct CommandLineArgs {
 
 	#[clap(short, long, default_value_t = 0)]
 	percent: usize,
+
+	#[clap(short, long, default_value_t = 100000)]
+	number_of_packets: usize,
 }
 
 mod lib;
@@ -78,8 +81,8 @@ fn sif(socket: &UdpSocket, addr: &SocketAddr, verbose: bool) {
 
 // Sends 100k commands where 100-percent% are PUT and percent% are BAD
 // where percent is CLA
-fn frey(socket: &UdpSocket, addr: &SocketAddr, verbose: bool, percent: usize) {
-	let total = 100000;
+fn frey(socket: &UdpSocket, addr: &SocketAddr, verbose: bool, percent: usize, number_of_packets: usize) {
+	let total = number_of_packets;
 	let bad = (total * percent) / 100;
 	let good = total - bad;
 
@@ -94,7 +97,7 @@ fn frey(socket: &UdpSocket, addr: &SocketAddr, verbose: bool, percent: usize) {
 	}
 
 	send_get_cmd(socket, addr, verbose);
-	// send_stop_cmd(socket, addr, verbose);
+	send_stop_cmd(socket, addr, verbose);
 }
 
 fn main() {
@@ -104,6 +107,7 @@ fn main() {
 	let verbose = args.verbose;
 	let behaviour = args.behaviour;
 	let percent = args.percent;
+	let number_of_packets = args.number_of_packets;
 
 	// Create UDP socket and server address
 	let socket = UdpSocket::bind("127.0.0.1:0").expect("Failed to bind UDP socket");
@@ -119,7 +123,7 @@ fn main() {
 		"njord" => njord(&socket, &server_addr, verbose),
 		"sylvie" => sylvie(&socket, &server_addr, verbose),
 		"sif" => sif(&socket, &server_addr, verbose),
-		"frey" => frey(&socket, &server_addr, verbose, percent),
+		"frey" => frey(&socket, &server_addr, verbose, percent, number_of_packets),
 		_ => logging(verbose, "Not a valid behaviour"),
 	}
 }

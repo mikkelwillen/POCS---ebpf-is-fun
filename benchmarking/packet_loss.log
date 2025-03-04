@@ -1,0 +1,35 @@
+Packet Loss
+==================================================
+Filter: simple-socket-filter
+Percent: 1
+Packets: 100
+Sending 99 PUT commands
+Sending 1 BAD commands
+Sending GET command
+Received response: 99
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 1
+Packets: 1000
+Sending 990 PUT commands
+Sending 10 BAD commands
+Sending GET command
+Received response: 990
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
+Filter: simple-socket-filter
+Percent: 1
+Packets: 10000
+Sending 9900 PUT commands
+Sending 100 BAD commands
+Sending GET command
+Received response: 9900
+Sending STOP command
+STOP command sent
+
+--------------------------------------------------
