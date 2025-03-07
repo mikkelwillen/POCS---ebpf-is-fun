@@ -6,29 +6,32 @@ import os
 import re
 import pandas as pd
 
-
-# Paths
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-benchmark_log = os.path.join(project_root, "benchmarking", "packet_loss.log")
+# Constants
+NUM_RUNS = 2
 
 # Iterators
-percents = [1, 25, 50, 75, 99]
-number_of_packets = [100, 1000] #[100, 1000, 10000, 100000, 1000000, 10000000]
-haskell_servers = ["./plain-server", "./socketfilter-server"]
-rust_servers = ["simple-socket-filter", "valid-command", "robust-valid-command"]
+PERCENTS = [1, 25, 50, 75, 99]
+NUMBER_OF_PACKETS = [100, 1000, 10000, 100000, 1000000, 10000000]
+HASKELL_SERVERS = ["./plain-server", "./socketfilter-server"]
+RUST_SERVERS = ["simple-socket-filter", "valid-command", "robust-valid-command"]
+
+# Paths
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+BENCHMARK_LOG = os.path.join(PROJECT_ROOT, "benchmarking", "packet_loss.log")
+
 
 # Open and clear the log file
-with open(benchmark_log, "w") as f:
+with open(BENCHMARK_LOG, "w") as f:
     f.write("Packet Loss\n")
     f.write("=" * 50 + "\n")
 
-def rust_server_rust_client(rust_servers=rust_servers, percents=percents, number_of_packets=number_of_packets):
+def rust_server_rust_client(rust_servers=RUST_SERVERS, percents=PERCENTS, number_of_packets=NUMBER_OF_PACKETS):
     """Runs the Rust server and client, logging packet loss data."""
     for filter_name in rust_servers:
 
         subprocess.run(
             ["make", "clean"],
-            cwd=os.path.join(project_root, "aya"),
+            cwd=os.path.join(PROJECT_ROOT, "aya"),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
@@ -37,76 +40,87 @@ def rust_server_rust_client(rust_servers=rust_servers, percents=percents, number
         # Build the server
         subprocess.run(
             ["make", "build", f"filter={filter_name}"],
-            cwd=os.path.join(project_root, "aya"),
+            cwd=os.path.join(PROJECT_ROOT, "aya"),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
 
         # time.sleep(30)
-
         for percent, packets in itertools.product(percents, number_of_packets):
 
-            # Start the server instance
-            server_process = subprocess.Popen(
-                ["make", "run", f"filter={filter_name}"],
-                cwd=os.path.join(project_root, "aya"),
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
-            )
+            packet_sum = 0
+            no_responses = 0
 
-            # Allow some time for the server to start
-            time.sleep(1)
+            for i in range(NUM_RUNS):
 
-            print(f"Running client with percent={percent} and packets={packets}\n")
+                # Start the server instance
+                server_process = subprocess.Popen(
+                    ["make", "run", f"filter={filter_name}"],
+                    cwd=os.path.join(PROJECT_ROOT, "aya"),
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL
+                )
 
-            # Run the client instance
-            client_process = subprocess.run(
-                ["cargo", "run", "--", "-v", "-p", str(percent), "-n", str(packets), "-b", "frey"],
-                cwd=os.path.join(project_root, "rust-client"),
-                capture_output=True
-            )
+                # Allow some time for the server to start
+                time.sleep(1)
 
-            # Store client output
-            client_output = client_process.stdout.decode()
+                print(f"Running client with percent={percent} and packets={packets}\n")
+
+                # Run the client instance
+                client_process = subprocess.run(
+                    ["cargo", "run", "--", "-v", "-p", str(percent), "-n", str(packets), "-b", "frey"],
+                    cwd=os.path.join(PROJECT_ROOT, "rust-client"),
+                    capture_output=True
+                )
+
+                # Store client output
+                client_output = client_process.stdout.decode()
+
+                # print(client_output)
+
+                for line in client_output.splitlines():
+                    match = re.search(r"Received response:\s*(\d+)", line)
+                    if match:
+                        packet_sum += int(match.group(1))
+                    elif "No response from the server" in line:
+                        no_responses += 1
+
+                # Stop the server
+                server_process.terminate()
+                try:
+                    server_process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    server_process.kill()
 
             # Write to log file
-            with open(benchmark_log, "a") as f:
+            average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
+            expected_good_packets = int(packets * (1 - percent / 100))
+            packet_loss = expected_good_packets - average_received
+            packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
+            runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
+
+            print(f"average received: {average_received}\n")
+            with open(BENCHMARK_LOG, "a") as f:
                 f.write(f"Filter: {filter_name}\n")
                 f.write(f"Percent: {percent}\n")
                 f.write(f"Packets: {packets}\n")
-                f.write(client_output + "\n")
+                f.write(f"Runs that received response: {runs_with_response}\n")
+                f.write(f"Average packets received: {average_received}\n")
+                f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
                 f.write("-" * 50 + "\n")
 
-            # print(client_output)
+def parse_and_generate_packet_loss_table(log_file):
+    """
+    Parses the log file, extracts packet loss data, and generates a formatted table.
+    The table displays packet loss percentage and responding runs with Percent Bad (Y-Axis) and Packets Sent (X-Axis).
+    """
+    packet_loss_data = []
 
-            # Stop the server
-            server_process.terminate()
-            try:
-                server_process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                server_process.kill()
-    
-def parse_received_responses():
-    """Parses the log file to extract 'Received response' values as integers."""
-    received_responses = []
-
-    with open(benchmark_log, "r") as f:
-        for line in f:
-            match = re.search(r"Received response:\s*(\d+)", line)
-            if match:
-                received_responses.append(int(match.group(1)))
-            elif "No response from the server" in line:
-                received_responses.append(-1)
-
-    return received_responses
-
-def parse_packet_loss():
-    """Parses the log file to calculate packet loss percentage."""
-    losses = []
-    with open(benchmark_log, "r") as f:
+    # Read and parse log file
+    with open(log_file, "r") as f:
         lines = f.readlines()
 
-    filter_name, percent, packets, received = None, None, None, None
+    filter_name, percent, responding_runs, packets, packet_loss_percentage = None, None, None, None, None
 
     for line in lines:
         if "Filter:" in line:
@@ -115,63 +129,54 @@ def parse_packet_loss():
             percent = int(line.split(":")[1].strip())
         elif "Packets:" in line:
             packets = int(line.split(":")[1].strip())
-        elif "Received response:" in line:
-            received = int(line.split(":")[1].strip())
-        elif "No response from the server" in line:
-            received = -1
+        elif "Runs that received response:" in line:
+            responding_runs = int(line.split(":")[1].strip())
+        elif "Average packet loss percentage:" in line:
+            match = re.search(r"[-+]?\d*\.\d+|\d+", line.split(":")[1].strip())
+            if match:
+                packet_loss_percentage = float(match.group())
 
-        if filter_name and percent is not None and packets is not None and received is not None:
-            # Calculate expected good packets
-            expected_good_packets = int(packets * (1 - percent / 100))
-            packet_loss = expected_good_packets - received
-            packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
-
-            losses.append({
+        if filter_name and percent is not None and packets is not None and responding_runs is not None and packet_loss_percentage is not None:
+            packet_loss_data.append({
                 "Filter": filter_name,
                 "Percent Bad": percent,
+                "Responding Runs": responding_runs,
                 "Packets Sent": packets,
-                "Expected Good Packets": expected_good_packets,
-                "Received Packets": received,
-                "Packets Lost": packet_loss,
-                "Packet Loss %": round(packet_loss_percentage, 2)
+                "Packet Loss %": packet_loss_percentage
             })
+            filter_name, percent, responding_runs, packets, packet_loss_percentage = None, None, None, None, None
 
-            # Reset values for next entry
-            filter_name, percent, packets, received = None, None, None, None
-
-    return losses
-
-def generate_packet_loss_table(packet_loss_data):
-    """Generates and prints a formatted table of packet loss percentages."""
-    # Extract unique percent values and packet counts
+    # Process data into a table
     percent_values = sorted(set(entry["Percent Bad"] for entry in packet_loss_data))
     packet_counts = sorted(set(entry["Packets Sent"] for entry in packet_loss_data))
     filter_names = sorted(set(entry["Filter"] for entry in packet_loss_data))
 
     tables = {}
-
     for filter_name in filter_names:
-        # Create a dictionary for storing packet loss percentages
+        # Initialize table structure
         table_data = {packet: [] for packet in packet_counts}
-
         for percent in percent_values:
             row = []
             for packet in packet_counts:
-                # Find the corresponding packet loss percentage
+                # Get corresponding packet loss percentage and responding runs
                 matching_entry = next(
                     (entry for entry in packet_loss_data if entry["Filter"] == filter_name
                      and entry["Percent Bad"] == percent and entry["Packets Sent"] == packet),
                     None
                 )
-                row.append(matching_entry["Packet Loss %"] if matching_entry else "-")
+                if matching_entry:
+                    formatted_value = f"{matching_entry['Packet Loss %']}% ({matching_entry['Responding Runs']})"
+                else:
+                    formatted_value = "-"
+
+                row.append(formatted_value)
 
             for i, packet in enumerate(packet_counts):
                 table_data[packet].append(row[i])
 
-        # Convert dictionary to DataFrame
+        # Convert to DataFrame
         df = pd.DataFrame(table_data, index=percent_values)
         df.index.name = "Percent"
-
         tables[filter_name] = df
 
     return tables
@@ -179,19 +184,9 @@ def generate_packet_loss_table(packet_loss_data):
 if __name__ == "__main__":
     # Run tests
     rust_server_rust_client()
-    print("All tests completed")
-
-    # Parse and print results
-    responses = parse_received_responses()
-    print("Received Responses:", responses)
-
-    # Calculate packet loss
-    losses = parse_packet_loss()
-    for loss in losses:
-        print(loss)
 
     # Display tables
-    tables = generate_packet_loss_table(losses)
+    tables = parse_and_generate_packet_loss_table(BENCHMARK_LOG)
     for filter_name, df in tables.items():
         print(f"\nPacket Loss Table for {filter_name}")
         print(df.to_string())
