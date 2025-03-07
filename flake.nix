@@ -37,6 +37,19 @@
               openssl
             ];
           };
-       };
-      });
+
+          pythonShell = pkgs.mkShell {
+            shellHook = ''
+              fish
+            '';
+
+            buildInputs = with pkgs; [
+              (pkgs.python3.withPackages (python-pkgs: with python-pkgs; [
+                pandas
+              ]))
+            ];
+          };
+        };
+      }
+    );
 }
