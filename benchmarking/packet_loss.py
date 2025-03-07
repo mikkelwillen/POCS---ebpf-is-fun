@@ -33,6 +33,7 @@ def rust_server_rust_client(rust_servers=rust_servers, percents=percents, number
             stderr=subprocess.DEVNULL
         )
 
+        print("Building the server. Please wait")
         # Build the server
         subprocess.run(
             ["make", "build", f"filter={filter_name}"],
