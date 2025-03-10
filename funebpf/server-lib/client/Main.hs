@@ -36,14 +36,23 @@ percent = option auto
   <> value 0
   <> help "Percent of messages that should be bad for frey client")
 
+numberOfPackets :: Parser Int
+numberOfPackets = option auto
+  ( long "packets"
+  <> short 'c'
+  <> metavar "PACKETS"
+  <> value 100_000
+  <> help "Number of packets to send for frey2 client")
+
 data Config = Config
   { optVerbose :: Bool
   , optBehaviour :: String
   , optPercent :: Int
+  , optNumberOfPackets :: Int
   }
 
 opts :: Parser Config
-opts = Config <$> verbosity <*> behaviour <*> percent
+opts = Config <$> verbosity <*> behaviour <*> percent <*> numberOfPackets
 
 parseArgs :: ParserInfo Config
 parseArgs = info ( opts <**> helper ) fullDesc
@@ -69,6 +78,7 @@ main = do
       ("sylvie", _) -> sylvie sock addr verbose
       ("sif", _) -> sif sock addr verbose
       ("frey", p) -> frey sock addr verbose p
+      ("frey2", p) -> frey2 sock addr verbose p (optNumberOfPackets config)
       _ -> do logging "Not a valid behaviour" verbose
 
 -- simple client putting a lot of values into the bag server
@@ -148,6 +158,21 @@ frey sock addr verbose p = do
   sendGetCmd sock addr verbose
   sendStopCmd sock addr verbose
 
+frey2 :: Socket -> SockAddr -> Bool -> Int -> Int -> IO()
+frey2 sock addr verbose p c = do
+  let total = c
+      bad = (total * p) `div` 100
+      good = total - bad
+  logging ("Sending " <> show good <> " PUT commands") verbose
+  forM_ [1..good] $ \ m -> do
+    sendCommand sock addr $ putMsg 10 1
+  logging "PUT commands sent" verbose
+  logging ("Sending " <> show bad <> " BAD commands") verbose
+  forM_ [1..bad] $ \_ -> do
+    sendCommand sock addr $ badMsg 256
+  logging "BAD commands sent" verbose
+  sendGetCmd sock addr verbose
+  sendStopCmd sock addr verbose
 
 sendPut9Cmd :: Socket -> SockAddr -> Bool -> IO()
 sendPut9Cmd sock addr verbose = do
