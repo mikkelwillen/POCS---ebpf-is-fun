@@ -412,6 +412,106 @@ def parse_and_generate_packet_loss_table(log_file):
 
     return tables
 
+def generate_assembled_packet_loss_table(
+    percent_values=PERCENTS,
+    packet_values=[100, 1000, 10000, 100000, 1000000, 10000000]
+):
+    """
+    Reads the four benchmark log files, aggregates the data for each combination,
+    and generates one assembled table with the following columns:
+
+      percent | server-client combination | <packet count columns>
+
+    For each percent value, there will be one row per combination (in the order):
+      Haskell/Haskell, Haskell/Rust, Rust/Rust, Rust/Haskell.
+
+    Each cell displays the average packet loss percentage (formatted to 2 decimals)
+    and the number of runs that received a response in parentheses.
+    """
+    import re
+    import pandas as pd
+
+    # Mapping from combination to its corresponding log file.
+    log_files = {
+        "Haskell/Haskell": BENCHMARK_HASKELL_HASKELL,
+        "Haskell/Rust": BENCHMARK_HASKELL_RUST,
+        "Rust/Rust": BENCHMARK_RUST_RUST,
+        "Rust/Haskell": BENCHMARK_RUST_HASKELL,
+    }
+
+    # For each log file, parse the records.
+    # Each record is expected to have the following fields:
+    #   "Filter", "Percent", "Packets", "Runs that received response", "Average packet loss percentage"
+    # We will aggregate by (Percent, Packets).
+    combination_data = {}
+    for combo, log_file in log_files.items():
+        records = []
+        with open(log_file, "r") as f:
+            lines = f.readlines()
+        current_record = {}
+        for line in lines:
+            line = line.strip()
+            if line.startswith("Filter:"):
+                current_record["Filter"] = line.split(":", 1)[1].strip()
+            elif line.startswith("Percent:"):
+                current_record["Percent"] = int(line.split(":", 1)[1].strip())
+            elif line.startswith("Packets:"):
+                current_record["Packets"] = int(line.split(":", 1)[1].strip())
+            elif line.startswith("Runs that received response:"):
+                current_record["Runs"] = int(line.split(":", 1)[1].strip())
+            elif line.startswith("Average packet loss percentage:"):
+                match = re.search(r"[-+]?\d*\.\d+|\d+", line.split(":", 1)[1].strip())
+                if match:
+                    current_record["Loss"] = float(match.group())
+            # When all fields are present, store the record and reset.
+            if ("Filter" in current_record and "Percent" in current_record and
+                "Packets" in current_record and "Runs" in current_record and
+                "Loss" in current_record):
+                records.append(current_record)
+                current_record = {}
+
+        # Aggregate records for this combination by (Percent, Packets).
+        agg = {}
+        for rec in records:
+            key = (rec["Percent"], rec["Packets"])
+            if key not in agg:
+                agg[key] = {"Loss": rec["Loss"], "Runs": rec["Runs"], "count": 1}
+            else:
+                agg[key]["Loss"] += rec["Loss"]
+                agg[key]["Runs"] += rec["Runs"]
+                agg[key]["count"] += 1
+        # For each (percent, packets) key, compute average loss and runs.
+        # Format as "XX.XX% (Y)".
+        for key, val in agg.items():
+            avg_loss = val["Loss"] / val["count"]
+            avg_runs = val["Runs"] / val["count"]
+            agg[key] = f"{avg_loss:.2f}% ({int(avg_runs)})"
+        combination_data[combo] = agg
+
+    # Build the assembled table.
+    rows = []
+    # We use the order below for the combinations.
+    combo_order = ["Haskell/Haskell", "Haskell/Rust", "Rust/Rust", "Rust/Haskell"]
+    for percent in percent_values:
+        for combo in combo_order:
+            row = {"percent": percent, "server-client combination": combo}
+            for packet in packet_values:
+                key = (percent, packet)
+                cell = combination_data.get(combo, {}).get(key, "-")
+                row[str(packet)] = cell
+            rows.append(row)
+
+    df = pd.DataFrame(rows)
+
+    # (Optional) For visual clarity, you might want to only show the percent on the first row
+    # of each group. Here we blank out duplicate percent values.
+    df['percent'] = df.groupby('percent')['percent'].transform(
+        lambda x: [x.iloc[0]] + [""] * (len(x) - 1)
+    )
+
+    return df
+
+
 if __name__ == "__main__":
     # Run rust/rust tests
     rust_server_rust_client()
@@ -440,3 +540,9 @@ if __name__ == "__main__":
     for filter_name, df in tables.items():
         print(f"\nPacket Loss Table for {filter_name}")
         print(df.to_string())
+
+
+    # Generate the assembled packet loss table
+    assembled_df = generate_assembled_packet_loss_table()
+    print("\nAssembled Packet Loss Table:")
+    print(assembled_df.to_string(index=False))
