@@ -22,6 +22,36 @@ BENCHMARK_RUST_HASKELL = os.path.join(PROJECT_ROOT, "benchmarking", "packet_loss
 BENCHMARK_HASKELL_HASKELL = os.path.join(PROJECT_ROOT, "benchmarking", "packet_loss_haskell_haskell.log")
 BENCHMARK_HASKELL_RUST = os.path.join(PROJECT_ROOT, "benchmarking", "packet_loss_haskell_rust.log")
 
+def build_project():
+    """Builds the Rust and Haskell projects."""
+    subprocess.run(
+        ["sudo", "make", "clean"],
+        cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+    subprocess.run(
+        ["sudo", "make", "all"],
+        cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+    subprocess.run(
+        ["make", "clean"],
+        cwd=os.path.join(PROJECT_ROOT, "aya"),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
+    subprocess.run(
+        ["make", "build-release"],
+        cwd=os.path.join(PROJECT_ROOT, "aya"),
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
+
 def rust_server_rust_client(rust_servers=RUST_SERVERS, percents=PERCENTS, number_of_packets=NUMBER_OF_PACKETS):
     """Runs the Rust server and client, logging packet loss data."""
 
@@ -30,78 +60,67 @@ def rust_server_rust_client(rust_servers=RUST_SERVERS, percents=PERCENTS, number
         f.write("Packet Loss\n")
         f.write("=" * 50 + "\n")
 
-    for filter_name in rust_servers:
+    for filter_name, percent, packets in itertools.product(rust_servers, percents, number_of_packets):
+        packet_sum = 0
+        no_responses = 0
 
-        # Run the rust server
-        subprocess.run(
-            ["sudo", "./(filter_name)/release/simple-server"],
-            cwd=os.path.join(PROJECT_ROOT, "aya"),
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
+        print(f"Running tests for filter: {filter_name}:")
+        print(f"Running client with percent={percent} and packets={packets}, {NUM_RUNS} times")
+        for i in range(NUM_RUNS):
 
-        for percent, packets in itertools.product(percents, number_of_packets):
+            # Start the server instance
+            server_process = subprocess.Popen(
+                ["sudo", f"./{filter_name}/release/simple-server"],
+                cwd=os.path.join(PROJECT_ROOT, "aya"),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
 
-            packet_sum = 0
-            no_responses = 0
+            # Allow some time for the server to start
+            # time.sleep(0.5)
 
-            for i in range(NUM_RUNS):
+            # Run the client instance
+            client_process = subprocess.run(
+                ["cargo", "run", "--", "-v", "-p", str(percent), "-n", str(packets), "-b", "frey"],
+                cwd=os.path.join(PROJECT_ROOT, "rust-client"),
+                capture_output=True
+            )
 
-                # Start the server instance
-                server_process = subprocess.Popen(
-                    ["make", "run", f"filter={filter_name}"],
-                    cwd=os.path.join(PROJECT_ROOT, "aya"),
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
+            # Store client output
+            client_output = client_process.stdout.decode()
 
-                # Allow some time for the server to start
-                time.sleep(1)
+            # print(client_output)
 
-                print(f"Running client with percent={percent} and packets={packets}\n")
+            for line in client_output.splitlines():
+                match = re.search(r"Received response:\s*(\d+)", line)
+                if match:
+                    packet_sum += int(match.group(1))
+                elif "No response from the server" in line:
+                    no_responses += 1
 
-                # Run the client instance
-                client_process = subprocess.run(
-                    ["cargo", "run", "--", "-v", "-p", str(percent), "-n", str(packets), "-b", "frey"],
-                    cwd=os.path.join(PROJECT_ROOT, "rust-client"),
-                    capture_output=True
-                )
+            # Stop the server
+            server_process.terminate()
+            try:
+                server_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                server_process.kill()
 
-                # Store client output
-                client_output = client_process.stdout.decode()
+        # Write to log file
+        average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
+        expected_good_packets = int(packets * (1 - percent / 100))
+        packet_loss = expected_good_packets - average_received
+        packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
+        runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
 
-                # print(client_output)
-
-                for line in client_output.splitlines():
-                    match = re.search(r"Received response:\s*(\d+)", line)
-                    if match:
-                        packet_sum += int(match.group(1))
-                    elif "No response from the server" in line:
-                        no_responses += 1
-
-                # Stop the server
-                server_process.terminate()
-                try:
-                    server_process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    server_process.kill()
-
-            # Write to log file
-            average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
-            expected_good_packets = int(packets * (1 - percent / 100))
-            packet_loss = expected_good_packets - average_received
-            packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
-            runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
-
-            print(f"average received: {average_received}\n")
-            with open(BENCHMARK_RUST_RUST, "a") as f:
-                f.write(f"Filter: {filter_name}\n")
-                f.write(f"Percent: {percent}\n")
-                f.write(f"Packets: {packets}\n")
-                f.write(f"Runs that received response: {runs_with_response}\n")
-                f.write(f"Average packets received: {average_received}\n")
-                f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
-                f.write("-" * 50 + "\n")
+        print(f"average received: {average_received}\n")
+        with open(BENCHMARK_RUST_RUST, "a") as f:
+            f.write(f"Filter: {filter_name}\n")
+            f.write(f"Percent: {percent}\n")
+            f.write(f"Packets: {packets}\n")
+            f.write(f"Runs that received response: {runs_with_response}\n")
+            f.write(f"Average packets received: {average_received}\n")
+            f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
+            f.write("-" * 50 + "\n")
 
 def rust_server_haskell_client(rust_servers=RUST_SERVERS, percents=PERCENTS, number_of_packets=NUMBER_OF_PACKETS):
     """Runs the Rust server and client, logging packet loss data."""
@@ -111,78 +130,67 @@ def rust_server_haskell_client(rust_servers=RUST_SERVERS, percents=PERCENTS, num
         f.write("Packet Loss\n")
         f.write("=" * 50 + "\n")
 
-    for filter_name in rust_servers:
+    for filter_name, percent, packets in itertools.product(rust_servers, percents, number_of_packets):
+        packet_sum = 0
+        no_responses = 0
 
-        # Run the rust server
-        subprocess.run(
-            ["sudo", "./(filter_name)/release/simple-server"],
-            cwd=os.path.join(PROJECT_ROOT, "aya"),
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
+        print(f"Running tests for filter: {filter_name}:")
+        print(f"Running client with percent={percent} and packets={packets}, {NUM_RUNS} times")
+        for i in range(NUM_RUNS):
 
-        for percent, packets in itertools.product(percents, number_of_packets):
+            # Start the server instance
+            server_process = subprocess.Popen(
+                ["sudo", f"./{filter_name}/release/simple-server"],
+                cwd=os.path.join(PROJECT_ROOT, "aya"),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
 
-            packet_sum = 0
-            no_responses = 0
+            # Allow some time for the server to start
+            # time.sleep(1)
 
-            for i in range(NUM_RUNS):
+            # Run the client instance
+            client_process = subprocess.run(
+                ["./test-client", "-v", "-p", str(percent), "-c", str(packets), "-b", "frey2"],
+                cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
+                capture_output=True
+            )
 
-                # Start the server instance
-                server_process = subprocess.Popen(
-                    ["make", "run", f"filter={filter_name}"],
-                    cwd=os.path.join(PROJECT_ROOT, "aya"),
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
+            # Store client output
+            client_output = client_process.stdout.decode()
 
-                # Allow some time for the server to start
-                time.sleep(1)
+            # print(client_output)
 
-                print(f"Running client with percent={percent} and packets={packets}\n")
+            for line in client_output.splitlines():
+                match = re.search(r'Server response:\s*"(\d+)"', line)
+                if match:
+                    packet_sum += int(match.group(1))
+                elif "No response from the server" in line:
+                    no_responses += 1
 
-                # Run the client instance
-                client_process = subprocess.run(
-                    ["./test-client", "-v", "-p", str(percent), "-c", str(packets), "-b", "frey2"],
-                    cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
-                    capture_output=True
-                )
+            # Stop the server
+            server_process.terminate()
+            try:
+                server_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                server_process.kill()
 
-                # Store client output
-                client_output = client_process.stdout.decode()
+        # Write to log file
+        average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
+        expected_good_packets = int(packets * (1 - percent / 100))
+        packet_loss = expected_good_packets - average_received
+        packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
+        runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
 
-                # print(client_output)
-
-                for line in client_output.splitlines():
-                    match = re.search(r'Server response:\s*"(\d+)"', line)
-                    if match:
-                        packet_sum += int(match.group(1))
-                    elif "No response from the server" in line:
-                        no_responses += 1
-
-                # Stop the server
-                server_process.terminate()
-                try:
-                    server_process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    server_process.kill()
-
-            # Write to log file
-            average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
-            expected_good_packets = int(packets * (1 - percent / 100))
-            packet_loss = expected_good_packets - average_received
-            packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
-            runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
-
-            print(f"average received: {average_received}\n")
-            with open(BENCHMARK_RUST_HASKELL, "a") as f:
-                f.write(f"Filter: {filter_name}\n")
-                f.write(f"Percent: {percent}\n")
-                f.write(f"Packets: {packets}\n")
-                f.write(f"Runs that received response: {runs_with_response}\n")
-                f.write(f"Average packets received: {average_received}\n")
-                f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
-                f.write("-" * 50 + "\n")
+        print(f"average received: {average_received}\n")
+        with open(BENCHMARK_RUST_HASKELL, "a") as f:
+            f.write(f"Filter: {filter_name}\n")
+            f.write(f"Percent: {percent}\n")
+            f.write(f"Packets: {packets}\n")
+            f.write(f"Runs that received response: {runs_with_response}\n")
+            f.write(f"Average packets received: {average_received}\n")
+            f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
+            f.write("-" * 50 + "\n")
 
 def haskell_server_haskell_client(haskell_servers=HASKELL_SERVERS, percents=PERCENTS, number_of_packets=NUMBER_OF_PACKETS):
     """Runs the Haskell server and client, logging packet loss data."""
@@ -192,75 +200,64 @@ def haskell_server_haskell_client(haskell_servers=HASKELL_SERVERS, percents=PERC
         f.write("Packet Loss\n")
         f.write("=" * 50 + "\n")
 
-    # subprocess.run(
-    #     ["make", "all"],
-    #     cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
-    #     stdout=subprocess.DEVNULL,
-    #     stderr=subprocess.DEVNULL
-    # )
+    for filter_name, percent, packets in itertools.product(haskell_servers, percents, number_of_packets):
+        packet_sum = 0
+        no_responses = 0
 
-    for filter_name in haskell_servers:
+        print(f"Running tests for filter: {filter_name}:")
+        print(f"Running client with percent={percent} and packets={packets}, {NUM_RUNS} times")
+        for i in range(NUM_RUNS):
 
-        for percent, packets in itertools.product(percents, number_of_packets):
+            # Start the server instance
+            server_process = subprocess.Popen(
+                [f"./{filter_name}"],
+                cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
 
-            packet_sum = 0
-            no_responses = 0
+            # Run the client instance
+            client_process = subprocess.run(
+                ["./test-client", "-v", "-p", str(percent), "-c", str(packets), "-b", "frey2"],
+                cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
+                capture_output=True
+            )
 
-            for i in range(NUM_RUNS):
+            # Store client output
+            client_output = client_process.stdout.decode()
 
-                # Start the server instance
-                server_process = subprocess.Popen(
-                    [f"./{filter_name}"],
-                    cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
+            # print(client_output")
 
-                print(f"Running client with percent={percent} and packets={packets}\n")
+            for line in client_output.splitlines():
+                match = re.search(r'Server response:\s*"(\d+)"', line)
+                if match:
+                    packet_sum += int(match.group(1))
+                elif "No response from the server" in line:
+                    no_responses += 1
 
-                # Run the client instance
-                client_process = subprocess.run(
-                    ["./test-client", "-v", "-p", str(percent), "-c", str(packets), "-b", "frey2"],
-                    cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
-                    capture_output=True
-                )
+            # Stop the server
+            server_process.terminate()
+            try:
+                server_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                server_process.kill()
 
-                # Store client output
-                client_output = client_process.stdout.decode()
+        # Write to log file
+        average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
+        expected_good_packets = int(packets * (1 - percent / 100))
+        packet_loss = expected_good_packets - average_received
+        packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
+        runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
 
-                # print(client_output")
-
-                for line in client_output.splitlines():
-                    match = re.search(r'Server response:\s*"(\d+)"', line)
-                    if match:
-                        packet_sum += int(match.group(1))
-                    elif "No response from the server" in line:
-                        no_responses += 1
-
-                # Stop the server
-                server_process.terminate()
-                try:
-                    server_process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    server_process.kill()
-
-            # Write to log file
-            average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
-            expected_good_packets = int(packets * (1 - percent / 100))
-            packet_loss = expected_good_packets - average_received
-            packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
-            runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
-
-            print(f"average received: {average_received}\n")
-            with open(BENCHMARK_HASKELL_HASKELL, "a") as f:
-                f.write(f"Filter: {filter_name}\n")
-                f.write(f"Percent: {percent}\n")
-                f.write(f"Packets: {packets}\n")
-                f.write(f"Runs that received response: {runs_with_response}\n")
-                f.write(f"Average packets received: {average_received}\n")
-                f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
-                f.write("-" * 50 + "\n")
-
+        print(f"average received: {average_received}\n")
+        with open(BENCHMARK_HASKELL_HASKELL, "a") as f:
+            f.write(f"Filter: {filter_name}\n")
+            f.write(f"Percent: {percent}\n")
+            f.write(f"Packets: {packets}\n")
+            f.write(f"Runs that received response: {runs_with_response}\n")
+            f.write(f"Average packets received: {average_received}\n")
+            f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
+            f.write("-" * 50 + "\n")
 
 def haskell_server_rust_client(haskell_servers=HASKELL_SERVERS, percents=PERCENTS, number_of_packets=NUMBER_OF_PACKETS):
     """Runs the Haskell server and client, logging packet loss data."""
@@ -270,75 +267,64 @@ def haskell_server_rust_client(haskell_servers=HASKELL_SERVERS, percents=PERCENT
         f.write("Packet Loss\n")
         f.write("=" * 50 + "\n")
 
-    # subprocess.run(
-    #     ["make", "all"],
-    #     cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
-    #     stdout=subprocess.DEVNULL,
-    #     stderr=subprocess.DEVNULL
-    # )
+    for filter_name, percent, packets in itertools.product(haskell_servers, percents, number_of_packets):
+        packet_sum = 0
+        no_responses = 0
 
-    for filter_name in haskell_servers:
+        print(f"Running tests for filter: {filter_name}:")
+        print(f"Running client with percent={percent} and packets={packets}, {NUM_RUNS} times")
+        for i in range(NUM_RUNS):
 
-        for percent, packets in itertools.product(percents, number_of_packets):
+            # Start the server instance
+            server_process = subprocess.Popen(
+                [f"./{filter_name}"],
+                cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
 
-            packet_sum = 0
-            no_responses = 0
+            # Run the client instance
+            client_process = subprocess.run(
+                ["cargo", "run", "--", "-v", "-p", str(percent), "-n", str(packets), "-b", "frey"],
+                cwd=os.path.join(PROJECT_ROOT, "rust-client"),
+                capture_output=True
+            )
 
-            for i in range(NUM_RUNS):
+            # Store client output
+            client_output = client_process.stdout.decode()
 
-                # Start the server instance
-                server_process = subprocess.Popen(
-                    [f"./{filter_name}"],
-                    cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
-                    stdout=subprocess.DEVNULL,
-                    stderr=subprocess.DEVNULL
-                )
+            # print(client_output)
 
-                print(f"Running client with percent={percent} and packets={packets}\n")
+            for line in client_output.splitlines():
+                match = re.search(r"Received response:\s*(\d+)", line)
+                if match:
+                    packet_sum += int(match.group(1))
+                elif "No response from the server" in line:
+                    no_responses += 1
 
-                # Run the client instance
-                client_process = subprocess.run(
-                    ["cargo", "run", "--", "-v", "-p", str(percent), "-n", str(packets), "-b", "frey"],
-                    cwd=os.path.join(PROJECT_ROOT, "rust-client"),
-                    capture_output=True
-                )
+            # Stop the server
+            server_process.terminate()
+            try:
+                server_process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                server_process.kill()
 
-                # Store client output
-                client_output = client_process.stdout.decode()
+        # Write to log file
+        average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
+        expected_good_packets = int(packets * (1 - percent / 100))
+        packet_loss = expected_good_packets - average_received
+        packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
+        runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
 
-                print(client_output)
-
-                for line in client_output.splitlines():
-                    match = re.search(r"Received response:\s*(\d+)", line)
-                    if match:
-                        packet_sum += int(match.group(1))
-                    elif "No response from the server" in line:
-                        no_responses += 1
-
-                # Stop the server
-                server_process.terminate()
-                try:
-                    server_process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    server_process.kill()
-
-            # Write to log file
-            average_received = packet_sum/(NUM_RUNS - no_responses) if (NUM_RUNS - no_responses) > 0 else 0
-            expected_good_packets = int(packets * (1 - percent / 100))
-            packet_loss = expected_good_packets - average_received
-            packet_loss_percentage = (packet_loss / expected_good_packets) * 100 if expected_good_packets > 0 else 0
-            runs_with_response = NUM_RUNS - no_responses if (NUM_RUNS - no_responses) > 0 else 0
-
-            print(f"average received: {average_received}\n")
-            with open(BENCHMARK_HASKELL_RUST, "a") as f:
-                f.write(f"Filter: {filter_name}\n")
-                f.write(f"Percent: {percent}\n")
-                f.write(f"Packets: {packets}\n")
-                f.write(f"Runs that received response: {runs_with_response}\n")
-                f.write(f"Average packets received: {average_received}\n")
-                f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
-                f.write("-" * 50 + "\n")
-
+        print(f"average received: {average_received}\n")
+        with open(BENCHMARK_HASKELL_RUST, "a") as f:
+            f.write(f"Filter: {filter_name}\n")
+            f.write(f"Percent: {percent}\n")
+            f.write(f"Packets: {packets}\n")
+            f.write(f"Runs that received response: {runs_with_response}\n")
+            f.write(f"Average packets received: {average_received}\n")
+            f.write(f"Average packet loss percentage: {packet_loss_percentage}\n")
+            f.write("-" * 50 + "\n")
 
 def parse_and_generate_packet_loss_table(log_file):
     """
