@@ -511,6 +511,67 @@ def generate_assembled_packet_loss_table(
 
     return df
 
+import matplotlib.pyplot as plt
+import re
+
+def plot_packet_loss_graphs(assembled_df):
+    """
+    Given an assembled packet loss table (DataFrame) with columns:
+      - "percent" (the percent value),
+      - "server-client combination" (one of the four combinations), and
+      - one column per packet count (with cell values formatted as "XX.XX% (Y)")
+    this function creates a graph for each unique percent value.
+
+    In each graph:
+      - The x-axis represents the number of packets.
+      - The y-axis represents the packet loss percentage.
+      - There are four lines (one per server-client combination).
+    """
+    # Before grouping by percent, fill any blank percent values (from the display transform)
+    # so that every row has the correct percent.
+    df = assembled_df.copy()
+    df['percent'] = df['percent'].replace("", None)
+    df['percent'] = df['percent'].ffill()  # fill down missing percent values
+
+    # Identify packet count columns: those whose names are digits.
+    packet_cols = [col for col in df.columns if col.isdigit()]
+    packet_cols = sorted(packet_cols, key=int)
+
+    # Get unique percent values (as they appear in the table)
+    unique_percents = sorted(df['percent'].unique(), key=float)
+
+    # Create one plot for each percent value.
+    for pct in unique_percents:
+        # Subset the DataFrame for this percent value.
+        sub_df = df[df['percent'] == pct]
+        plt.figure()
+        for _, row in sub_df.iterrows():
+            # For each combination, extract the numeric packet loss percentage values.
+            x_vals = []
+            y_vals = []
+            for col in packet_cols:
+                cell = row[col]
+                # Expecting cell format "XX.XX% (Y)". If missing or "-", skip.
+                if cell == "-" or cell.strip() == "":
+                    continue
+                match = re.search(r"([-+]?\d*\.\d+|\d+)%", cell)
+                if match:
+                    try:
+                        y = float(match.group(1))
+                    except ValueError:
+                        continue
+                    x_vals.append(int(col))
+                    y_vals.append(y)
+            if x_vals and y_vals:
+                plt.plot(x_vals, y_vals, marker='o', label=row["server-client combination"])
+        plt.xlabel("Number of Packets")
+        plt.ylabel("Packet Loss Percentage")
+        plt.title(f"Packet Loss Graph for Percent: {pct}")
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()
+
 
 if __name__ == "__main__":
     # Run rust/rust tests
@@ -546,3 +607,6 @@ if __name__ == "__main__":
     assembled_df = generate_assembled_packet_loss_table()
     print("\nAssembled Packet Loss Table:")
     print(assembled_df.to_string(index=False))
+
+    # Generate the packet loss graphs
+    plot_packet_loss_graphs(assembled_df)
