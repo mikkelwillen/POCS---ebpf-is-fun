@@ -70,7 +70,7 @@ def rust_server_rust_client(rust_servers=RUST_SERVERS, percents=PERCENTS, number
 
                 # Run the client instance
                 client_process = subprocess.run(
-                    ["cargo", "run", "--", "-v", "-p", str(percent), "-n", str(packets), "-b", "frey2"],
+                    ["cargo", "run", "--", "-v", "-p", str(percent), "-n", str(packets), "-b", "frey"],
                     cwd=os.path.join(PROJECT_ROOT, "rust-client"),
                     capture_output=True
                 )
@@ -128,7 +128,7 @@ def haskell_server_haskell_client(haskell_servers=HASKELL_SERVERS, percents=PERC
     #     stderr=subprocess.DEVNULL
     # )
 
-    for filter_name in rust_servers:
+    for filter_name in haskell_servers:
 
         for percent, packets in itertools.product(percents, number_of_packets):
 
@@ -149,18 +149,18 @@ def haskell_server_haskell_client(haskell_servers=HASKELL_SERVERS, percents=PERC
 
                 # Run the client instance
                 client_process = subprocess.run(
-                    ["./test-client -v -p", str(percent), "-b frey"],
-                    cwd=os.path.join(PROJECT_ROOT, "funepbf/server-lib"),
+                    ["./test-client", "-v", "-p", str(percent), "-c", str(packets), "-b", "frey2"],
+                    cwd=os.path.join(PROJECT_ROOT, "funebpf/server-lib"),
                     capture_output=True
                 )
 
                 # Store client output
                 client_output = client_process.stdout.decode()
 
-                # print(client_output)
+                # print(client_output + "HALLO!\n")
 
                 for line in client_output.splitlines():
-                    match = re.search(r"Received response:\"\s*(\d+)\"", line)
+                    match = re.search(r'Server response:\s*"(\d+)"', line)
                     if match:
                         packet_sum += int(match.group(1))
                     elif "No response from the server" in line:
