@@ -1,0 +1,1 @@
+/home/mikkel/repos/POCS---ebpf-is-fun/aya/reject-filter/release/build/server_lib-568b185aca348c5a/out/reject-filter/bpfel-unknown-none/release/socket-filter: /home/mikkel/.cargo/bin/bpf-linker /home/mikkel/repos/POCS---ebpf-is-fun/aya/filters/reject-filter/build.rs /home/mikkel/repos/POCS---ebpf-is-fun/aya/filters/reject-filter/src/main.rs
