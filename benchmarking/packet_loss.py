@@ -12,7 +12,7 @@ NUM_RUNS = 2
 # Iterators
 PERCENTS = [1, 25, 50, 75, 99]
 NUMBER_OF_PACKETS = [100, 1000] #[100, 1000, 10000, 100000, 1000000, 10000000]
-RUST_SERVERS = ["simple-socket-filter"] # "valid-command", "robust-valid-command"]
+RUST_SERVERS = ["simple-socket-filter", "valid-command", "robust-valid-command"]
 HASKELL_SERVERS = ["plain-server", "socketfilter-server"]
 
 # Paths
@@ -32,23 +32,14 @@ def rust_server_rust_client(rust_servers=RUST_SERVERS, percents=PERCENTS, number
 
     for filter_name in rust_servers:
 
+        # Run the rust server
         subprocess.run(
-            ["make", "clean"],
+            ["sudo", "./(filter_name)/release/simple-server"],
             cwd=os.path.join(PROJECT_ROOT, "aya"),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
         )
 
-        print("Building the server. Please wait")
-        # Build the server
-        subprocess.run(
-            ["make", "build", f"filter={filter_name}"],
-            cwd=os.path.join(PROJECT_ROOT, "aya"),
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
-
-        # time.sleep(30)
         for percent, packets in itertools.product(percents, number_of_packets):
 
             packet_sum = 0
@@ -82,7 +73,7 @@ def rust_server_rust_client(rust_servers=RUST_SERVERS, percents=PERCENTS, number
                 # print(client_output)
 
                 for line in client_output.splitlines():
-                    match = re.search(r"Received response\s*(\d+)", line)
+                    match = re.search(r"Received response:\s*(\d+)", line)
                     if match:
                         packet_sum += int(match.group(1))
                     elif "No response from the server" in line:
@@ -122,17 +113,9 @@ def rust_server_haskell_client(rust_servers=RUST_SERVERS, percents=PERCENTS, num
 
     for filter_name in rust_servers:
 
+        # Run the rust server
         subprocess.run(
-            ["make", "clean"],
-            cwd=os.path.join(PROJECT_ROOT, "aya"),
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
-
-        print("Building the server. Please wait")
-        # Build the server
-        subprocess.run(
-            ["make", "build", f"filter={filter_name}"],
+            ["sudo", "./(filter_name)/release/simple-server"],
             cwd=os.path.join(PROJECT_ROOT, "aya"),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL
@@ -323,10 +306,10 @@ def haskell_server_rust_client(haskell_servers=HASKELL_SERVERS, percents=PERCENT
                 # Store client output
                 client_output = client_process.stdout.decode()
 
-                # print(client_output)
+                print(client_output)
 
                 for line in client_output.splitlines():
-                    match = re.search(r"Received response\s*(\d+)", line)
+                    match = re.search(r"Received response:\s*(\d+)", line)
                     if match:
                         packet_sum += int(match.group(1))
                     elif "No response from the server" in line:
