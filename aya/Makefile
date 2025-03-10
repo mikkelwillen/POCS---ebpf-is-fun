@@ -19,6 +19,6 @@ run:
 
 clean:
 	cargo clean
-	rm -rf simple-socket-filter valid-command robust-valid-command
+	rm -rf simple-socket-filter valid-command robust-valid-command reject-filter
 
 # end
