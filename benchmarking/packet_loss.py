@@ -7,11 +7,11 @@ import re
 import pandas as pd
 
 # Constants
-NUM_RUNS = 2
+NUM_RUNS = 10
 
 # Iterators
-PERCENTS = [1, 25, 50, 75, 99]
-NUMBER_OF_PACKETS = [100, 1000] #[100, 1000, 10000, 100000, 1000000, 10000000]
+PERCENTS = [1] # 25, 50, 75, 99]
+NUMBER_OF_PACKETS = [100, 1000, 10000, 100000, 1000000, 10000000]
 RUST_SERVERS = ["simple-socket-filter", "valid-command", "robust-valid-command"]
 HASKELL_SERVERS = ["plain-server", "socketfilter-server"]
 
@@ -555,6 +555,7 @@ def plot_packet_loss_graphs(assembled_df):
         plt.title(f"Packet Loss Graph for Percent: {pct}")
         plt.legend()
         plt.grid(True)
+        plt.ylim(0, 100)
         plt.tight_layout()
         plt.show()
 
