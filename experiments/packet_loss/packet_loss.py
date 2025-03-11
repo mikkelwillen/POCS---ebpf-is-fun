@@ -5,22 +5,23 @@ import time
 import os
 import re
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Constants
 NUM_RUNS = 2
 
 # Iterators
-PERCENTS = [1] #, 25, 50, 75, 99]
-NUMBER_OF_PACKETS = [100, 1000] #, 10000, 100000, 1000000, 10000000]
+PERCENTS = [1, 25, 50, 75, 99]
+NUMBER_OF_PACKETS = [100, 1000, 10000, 100000, 1000000, 10000000]
 RUST_SERVERS = ["simple-socket-filter", "valid-command", "robust-valid-command"]
 HASKELL_SERVERS = ["plain-server", "socketfilter-server"]
 
 # Paths
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-BENCHMARK_RUST_RUST = os.path.join(PROJECT_ROOT, "experiments/packet_loss", "packet_loss_rust_rust.log")
-BENCHMARK_RUST_HASKELL = os.path.join(PROJECT_ROOT, "experiments/packet_loss", "packet_loss_rust_haskell.log")
-BENCHMARK_HASKELL_HASKELL = os.path.join(PROJECT_ROOT, "experiments/packet_loss", "packet_loss_haskell_haskell.log")
-BENCHMARK_HASKELL_RUST = os.path.join(PROJECT_ROOT, "experiments/packet_loss", "packet_loss_haskell_rust.log")
+BENCHMARK_RUST_RUST = os.path.join(PROJECT_ROOT, "experiments/packet_loss/20times", "packet_loss_rust_rust.log")
+BENCHMARK_RUST_HASKELL = os.path.join(PROJECT_ROOT, "experiments/packet_loss/20times", "packet_loss_rust_haskell.log")
+BENCHMARK_HASKELL_HASKELL = os.path.join(PROJECT_ROOT, "experiments/packet_loss/20times", "packet_loss_haskell_haskell.log")
+BENCHMARK_HASKELL_RUST = os.path.join(PROJECT_ROOT, "experiments/packet_loss/20times", "packet_loss_haskell_rust.log")
 
 def build_project():
     """Builds the Rust and Haskell projects."""
@@ -398,40 +399,28 @@ def parse_and_generate_packet_loss_table(log_file):
 
     return tables
 
-def generate_assembled_packet_loss_table(
-    percent_values=PERCENTS,
-    packet_values=[100, 1000, 10000, 100000, 1000000, 10000000]
-):
+def generate_assembled_table_for_combination(rust_filter, haskell_filter,
+                                             percent_values=PERCENTS,
+                                             packet_values=NUMBER_OF_PACKETS):
     """
-    Reads the four benchmark log files, aggregates the data for each combination,
-    and generates one assembled table with the following columns:
+    Generates an assembled table that combines records from all log files,
+    but only includes entries where:
+      - For rust tests (from BENCHMARK_RUST_RUST and BENCHMARK_RUST_HASKELL),
+        the Filter equals `rust_filter`.
+      - For haskell tests (from BENCHMARK_HASKELL_HASKELL and BENCHMARK_HASKELL_RUST),
+        the Filter equals `haskell_filter`.
 
-      percent | server-client combination | <packet count columns>
-
-    For each percent value, there will be one row per combination (in the order):
-      Haskell/Haskell, Haskell/Rust, Rust/Rust, Rust/Haskell.
-
-    Each cell displays the average packet loss percentage (formatted to 2 decimals)
-    and the number of runs that received a response in parentheses.
+    The table is assembled with one row per (Percent, server-client combination)
+    and columns for each packet count.
     """
-    import re
-    import pandas as pd
+    records = []
 
-    # Mapping from combination to its corresponding log file.
-    log_files = {
-        "Haskell/Haskell": BENCHMARK_HASKELL_HASKELL,
-        "Haskell/Rust": BENCHMARK_HASKELL_RUST,
-        "Rust/Rust": BENCHMARK_RUST_RUST,
-        "Rust/Haskell": BENCHMARK_RUST_HASKELL,
-    }
-
-    # For each log file, parse the records.
-    # Each record is expected to have the following fields:
-    #   "Filter", "Percent", "Packets", "Runs that received response", "Average packet loss percentage"
-    # We will aggregate by (Percent, Packets).
-    combination_data = {}
-    for combo, log_file in log_files.items():
-        records = []
+    # Process rust logs: assign combination labels based on the log file.
+    rust_logs = [
+        (BENCHMARK_RUST_RUST, "Rust/Rust"),
+        (BENCHMARK_RUST_HASKELL, "Rust/Haskell")
+    ]
+    for log_file, combo in rust_logs:
         with open(log_file, "r") as f:
             lines = f.readlines()
         current_record = {}
@@ -449,56 +438,81 @@ def generate_assembled_packet_loss_table(
                 match = re.search(r"[-+]?\d*\.\d+|\d+", line.split(":", 1)[1].strip())
                 if match:
                     current_record["Loss"] = float(match.group())
-            # When all fields are present, store the record and reset.
+            # When all fields are collected, process the record.
             if ("Filter" in current_record and "Percent" in current_record and
                 "Packets" in current_record and "Runs" in current_record and
                 "Loss" in current_record):
-                records.append(current_record)
+                if current_record["Filter"] == rust_filter:
+                    current_record["Combination"] = combo
+                    records.append(current_record.copy())
                 current_record = {}
 
-        # Aggregate records for this combination by (Percent, Packets).
-        agg = {}
-        for rec in records:
-            key = (rec["Percent"], rec["Packets"])
-            if key not in agg:
-                agg[key] = {"Loss": rec["Loss"], "Runs": rec["Runs"], "count": 1}
-            else:
-                agg[key]["Loss"] += rec["Loss"]
-                agg[key]["Runs"] += rec["Runs"]
-                agg[key]["count"] += 1
-        # For each (percent, packets) key, compute average loss and runs.
-        # Format as "XX.XX% (Y)".
-        for key, val in agg.items():
-            avg_loss = val["Loss"] / val["count"]
-            avg_runs = val["Runs"] / val["count"]
-            agg[key] = f"{avg_loss:.2f}% ({int(avg_runs)})"
-        combination_data[combo] = agg
+    # Process haskell logs.
+    haskell_logs = [
+        (BENCHMARK_HASKELL_HASKELL, "Haskell/Haskell"),
+        (BENCHMARK_HASKELL_RUST, "Haskell/Rust")
+    ]
+    for log_file, combo in haskell_logs:
+        with open(log_file, "r") as f:
+            lines = f.readlines()
+        current_record = {}
+        for line in lines:
+            line = line.strip()
+            if line.startswith("Filter:"):
+                current_record["Filter"] = line.split(":", 1)[1].strip()
+            elif line.startswith("Percent:"):
+                current_record["Percent"] = int(line.split(":", 1)[1].strip())
+            elif line.startswith("Packets:"):
+                current_record["Packets"] = int(line.split(":", 1)[1].strip())
+            elif line.startswith("Runs that received response:"):
+                current_record["Runs"] = int(line.split(":", 1)[1].strip())
+            elif line.startswith("Average packet loss percentage:"):
+                match = re.search(r"[-+]?\d*\.\d+|\d+", line.split(":", 1)[1].strip())
+                if match:
+                    current_record["Loss"] = float(match.group())
+            if ("Filter" in current_record and "Percent" in current_record and
+                "Packets" in current_record and "Runs" in current_record and
+                "Loss" in current_record):
+                if current_record["Filter"] == haskell_filter:
+                    current_record["Combination"] = combo
+                    records.append(current_record.copy())
+                current_record = {}
+
+    # Aggregate records by (Combination, Percent, Packets)
+    agg = {}
+    for rec in records:
+        key = (rec["Combination"], rec["Percent"], rec["Packets"])
+        if key not in agg:
+            agg[key] = {"Loss": rec["Loss"], "Runs": rec["Runs"], "count": 1}
+        else:
+            agg[key]["Loss"] += rec["Loss"]
+            agg[key]["Runs"] += rec["Runs"]
+            agg[key]["count"] += 1
+    # Format the aggregated values as "XX.XX% (Y)"
+    for key, val in agg.items():
+        avg_loss = val["Loss"] / val["count"]
+        avg_runs = val["Runs"] / val["count"]
+        agg[key] = f"{avg_loss:.2f}% ({int(avg_runs)})"
 
     # Build the assembled table.
     rows = []
-    # We use the order below for the combinations.
-    combo_order = ["Haskell/Haskell", "Haskell/Rust", "Rust/Rust", "Rust/Haskell"]
+    # Define the order for the server-client combinations.
+    combination_order = ["Haskell/Haskell", "Haskell/Rust", "Rust/Rust", "Rust/Haskell"]
     for percent in percent_values:
-        for combo in combo_order:
+        for combo in combination_order:
             row = {"percent": percent, "server-client combination": combo}
             for packet in packet_values:
-                key = (percent, packet)
-                cell = combination_data.get(combo, {}).get(key, "-")
+                key = (combo, percent, packet)
+                cell = agg.get(key, "-")
                 row[str(packet)] = cell
             rows.append(row)
 
     df = pd.DataFrame(rows)
-
-    # (Optional) For visual clarity, you might want to only show the percent on the first row
-    # of each group. Here we blank out duplicate percent values.
+    # Optional: Only display the percent value on the first row of each group.
     df['percent'] = df.groupby('percent')['percent'].transform(
-        lambda x: [x.iloc[0]] + [""] * (len(x) - 1)
+        lambda x: [x.iloc[0]] + [""]*(len(x)-1)
     )
-
     return df
-
-import matplotlib.pyplot as plt
-import re
 
 def plot_packet_loss_graphs(assembled_df):
     """
@@ -559,41 +573,49 @@ def plot_packet_loss_graphs(assembled_df):
         plt.tight_layout()
         plt.show()
 
-
 if __name__ == "__main__":
-    # Run rust/rust tests
-    rust_server_rust_client()
-    tables = parse_and_generate_packet_loss_table(BENCHMARK_RUST_RUST)
-    for filter_name, df in tables.items():
-        print(f"\nPacket Loss Table for {filter_name}")
-        print(df.to_string())
+    # # Run rust/rust tests
+    # rust_server_rust_client()
+    # tables = parse_and_generate_packet_loss_table(BENCHMARK_RUST_RUST)
+    # for filter_name, df in tables.items():
+    #     print(f"\nPacket Loss Table for {filter_name}")
+    #     print(df.to_string())
 
-    # Run rust/haskell tests
-    rust_server_haskell_client()
-    tables = parse_and_generate_packet_loss_table(BENCHMARK_RUST_HASKELL)
-    for filter_name, df in tables.items():
-        print(f"\nPacket Loss Table for {filter_name}")
-        print(df.to_string())
+    # # Run rust/haskell tests
+    # rust_server_haskell_client()
+    # tables = parse_and_generate_packet_loss_table(BENCHMARK_RUST_HASKELL)
+    # for filter_name, df in tables.items():
+    #     print(f"\nPacket Loss Table for {filter_name}")
+    #     print(df.to_string())
 
-    # Run haskell/haskell tests
-    haskell_server_haskell_client()
-    tables = parse_and_generate_packet_loss_table(BENCHMARK_HASKELL_HASKELL)
-    for filter_name, df in tables.items():
-        print(f"\nPacket Loss Table for {filter_name}")
-        print(df.to_string())
+    # # Run haskell/haskell tests
+    # haskell_server_haskell_client()
+    # tables = parse_and_generate_packet_loss_table(BENCHMARK_HASKELL_HASKELL)
+    # for filter_name, df in tables.items():
+    #     print(f"\nPacket Loss Table for {filter_name}")
+    #     print(df.to_string())
 
-    # Run haskell/rust tests
-    haskell_server_rust_client()
-    tables = parse_and_generate_packet_loss_table(BENCHMARK_HASKELL_RUST)
-    for filter_name, df in tables.items():
-        print(f"\nPacket Loss Table for {filter_name}")
-        print(df.to_string())
+    # # Run haskell/rust tests
+    # haskell_server_rust_client()
+    # tables = parse_and_generate_packet_loss_table(BENCHMARK_HASKELL_RUST)
+    # for filter_name, df in tables.items():
+    #     print(f"\nPacket Loss Table for {filter_name}")
+    #     print(df.to_string())
 
+    # Table 1: Haskell server = plain-server, Rust server = simple-socket-filter
+    assembled_table_1 = generate_assembled_table_for_combination(
+        rust_filter="simple-socket-filter", haskell_filter="plain-server"
+    )
+    print("\nAssembled Table 1 (Haskell server: plain-server, Rust server: simple-socket-filter):")
+    print(assembled_table_1.to_string(index=False))
 
-    # Generate the assembled packet loss table
-    assembled_df = generate_assembled_packet_loss_table()
-    print("\nAssembled Packet Loss Table:")
-    print(assembled_df.to_string(index=False))
+    # Table 2: Haskell server = socketfilter-server, Rust server = valid-command
+    assembled_table_2 = generate_assembled_table_for_combination(
+        rust_filter="valid-command", haskell_filter="socketfilter-server"
+    )
+    print("\nAssembled Table 2 (Haskell server: socketfilter-server, Rust server: valid-command):")
+    print(assembled_table_2.to_string(index=False))
 
     # Generate the packet loss graphs
-    plot_packet_loss_graphs(assembled_df)
+    plot_packet_loss_graphs(assembled_table_1)
+    plot_packet_loss_graphs(assembled_table_2)
