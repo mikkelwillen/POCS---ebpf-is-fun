@@ -7,20 +7,20 @@ import re
 import pandas as pd
 
 # Constants
-NUM_RUNS = 10
+NUM_RUNS = 2
 
 # Iterators
-PERCENTS = [1] # 25, 50, 75, 99]
-NUMBER_OF_PACKETS = [100, 1000, 10000, 100000, 1000000, 10000000]
+PERCENTS = [1] #, 25, 50, 75, 99]
+NUMBER_OF_PACKETS = [100, 1000] #, 10000, 100000, 1000000, 10000000]
 RUST_SERVERS = ["simple-socket-filter", "valid-command", "robust-valid-command"]
 HASKELL_SERVERS = ["plain-server", "socketfilter-server"]
 
 # Paths
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-BENCHMARK_RUST_RUST = os.path.join(PROJECT_ROOT, "benchmarking", "packet_loss_rust_rust.log")
-BENCHMARK_RUST_HASKELL = os.path.join(PROJECT_ROOT, "benchmarking", "packet_loss_rust_haskell.log")
-BENCHMARK_HASKELL_HASKELL = os.path.join(PROJECT_ROOT, "benchmarking", "packet_loss_haskell_haskell.log")
-BENCHMARK_HASKELL_RUST = os.path.join(PROJECT_ROOT, "benchmarking", "packet_loss_haskell_rust.log")
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+BENCHMARK_RUST_RUST = os.path.join(PROJECT_ROOT, "experiments/packet_loss", "packet_loss_rust_rust.log")
+BENCHMARK_RUST_HASKELL = os.path.join(PROJECT_ROOT, "experiments/packet_loss", "packet_loss_rust_haskell.log")
+BENCHMARK_HASKELL_HASKELL = os.path.join(PROJECT_ROOT, "experiments/packet_loss", "packet_loss_haskell_haskell.log")
+BENCHMARK_HASKELL_RUST = os.path.join(PROJECT_ROOT, "experiments/packet_loss", "packet_loss_haskell_rust.log")
 
 def build_project():
     """Builds the Rust and Haskell projects."""
