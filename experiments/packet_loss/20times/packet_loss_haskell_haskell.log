@@ -1,0 +1,1458 @@
+Packet Loss
+==================================================
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100
+Runs that received response: 2
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000
+Runs that received response: 2
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100
+Runs that received response: 2
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000
+Runs that received response: 2
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100
+Runs that received response: 2
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000
+Runs that received response: 2
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100
+Runs that received response: 2
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000
+Runs that received response: 2
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 2
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 2
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100
+Runs that received response: 20
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000
+Runs that received response: 20
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 10000
+Runs that received response: 20
+Average packets received: 9774.75
+Average packet loss percentage: 1.2651515151515151
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 100000
+Runs that received response: 20
+Average packets received: 19487.9
+Average packet loss percentage: 80.31525252525253
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 1
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100
+Runs that received response: 20
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000
+Runs that received response: 20
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 10000
+Runs that received response: 20
+Average packets received: 7497.4
+Average packet loss percentage: 0.03466666666667152
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 100000
+Runs that received response: 20
+Average packets received: 73415.7
+Average packet loss percentage: 2.112400000000004
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 25
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100
+Runs that received response: 20
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000
+Runs that received response: 20
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 10000
+Runs that received response: 20
+Average packets received: 5000.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 100000
+Runs that received response: 20
+Average packets received: 49409.65
+Average packet loss percentage: 1.180699999999997
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 50
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100
+Runs that received response: 20
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000
+Runs that received response: 20
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 10000
+Runs that received response: 20
+Average packets received: 2500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 100000
+Runs that received response: 20
+Average packets received: 24860.2
+Average packet loss percentage: 0.5591999999999971
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 75
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100
+Runs that received response: 20
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000
+Runs that received response: 20
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 10000
+Runs that received response: 20
+Average packets received: 100.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 100000
+Runs that received response: 20
+Average packets received: 1000.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 10000.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: plain-server
+Percent: 99
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100
+Runs that received response: 20
+Average packets received: 99.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000
+Runs that received response: 20
+Average packets received: 990.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 10000
+Runs that received response: 20
+Average packets received: 9788.3
+Average packet loss percentage: 1.1282828282828357
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 100000
+Runs that received response: 20
+Average packets received: 4856.4
+Average packet loss percentage: 95.09454545454547
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 1
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100
+Runs that received response: 20
+Average packets received: 75.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000
+Runs that received response: 20
+Average packets received: 750.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 10000
+Runs that received response: 20
+Average packets received: 7500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 100000
+Runs that received response: 20
+Average packets received: 73232.4
+Average packet loss percentage: 2.3568000000000078
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 25
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100
+Runs that received response: 20
+Average packets received: 50.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000
+Runs that received response: 20
+Average packets received: 500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 10000
+Runs that received response: 20
+Average packets received: 5000.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 100000
+Runs that received response: 20
+Average packets received: 49401.8
+Average packet loss percentage: 1.1963999999999941
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 50
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100
+Runs that received response: 20
+Average packets received: 25.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000
+Runs that received response: 20
+Average packets received: 250.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 10000
+Runs that received response: 20
+Average packets received: 2500.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 100000
+Runs that received response: 20
+Average packets received: 24878.1
+Average packet loss percentage: 0.4876000000000058
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 75
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100
+Runs that received response: 20
+Average packets received: 1.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000
+Runs that received response: 20
+Average packets received: 10.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 10000
+Runs that received response: 20
+Average packets received: 100.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 100000
+Runs that received response: 20
+Average packets received: 1000.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 1000000
+Runs that received response: 20
+Average packets received: 10000.0
+Average packet loss percentage: 0.0
+--------------------------------------------------
+Filter: socketfilter-server
+Percent: 99
+Packets: 10000000
+Runs that received response: 20
+Average packets received: 0.0
+Average packet loss percentage: 100.0
+--------------------------------------------------
