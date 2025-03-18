@@ -5,13 +5,15 @@ import time
 import os
 import re
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Constants
 NUM_RUNS = 2
 
 # Iterators
-PERCENTS = [1, 25, 50, 75, 99]
-NUMBER_OF_PACKETS = [100, 1000, 10000, 100000, 1000000,10000000]
+PERCENTS = [75, 99]
+# [1, 25, 50, 75, 99]
+NUMBER_OF_PACKETS = [100, 1000, 10000, 100000, 1000000] #, 10000000]
 SERVERS = ["simple-socket-filter", "valid-command"]
 
 # Paths
@@ -65,14 +67,14 @@ def run_test(servers=SERVERS, percents=PERCENTS, num_packets=NUMBER_OF_PACKETS):
             )
 
             # Run the client instance
-            client_process = subprocess.run(
-                ["./udp_client", "-p", str(percent), "-n", str(packets), "-b", "frey"],
+            client_process = subprocess.Popen(
+                ["./udp_client", "-p", str(percent), "-n", str(packets), "-b", "frigg"],
                 cwd=os.path.join(PROJECT_ROOT, "rust-client/target/release"),
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
 
-            # Store the output of the server
+            # Wait for the server to finish
             server_process.wait()
 
             # Parse the output of the server
@@ -99,5 +101,57 @@ def run_test(servers=SERVERS, percents=PERCENTS, num_packets=NUMBER_OF_PACKETS):
             f.write(f"Average time: {average_time}\n")
             f.write(f"-" * 50 + "\n")
 
+
+def parse_log(log_file):
+    """Parse the log file and return a pandas DataFrame"""
+    with open(log_file, "r") as f:
+        lines = f.readlines()
+
+    data = []
+    for i in range(2, len(lines), 5):
+        filter_name = lines[i].split(": ")[1].strip()
+        percent = lines[i + 1].split(": ")[1].strip()
+        packets = lines[i + 2].split(": ")[1].strip()
+        average_time = lines[i + 3].split(": ")[1].strip()
+
+        data.append([filter_name, percent, packets, average_time])
+
+    df = pd.DataFrame(data, columns=["Filter", "Percent", "Packets", "Average Time"])
+
+    dfs = {}
+    for percent in df['Percent'].unique():
+        # Filter rows for the given percent.
+        subset = df[df['Percent'] == percent]
+        # Pivot so that rows = Filter, columns = Packets, and cell values = Average Time.
+        pivot_df = subset.pivot(index='Packets', columns='Filter', values='Average Time')
+        dfs[percent] = pivot_df
+
+    # Display the pivoted DataFrames:
+    for percent, pivot_df in dfs.items():
+        print(f"\nDataFrame for Percent = {percent}:")
+        print(pivot_df)
+
+    return dfs
+
+def plot_results(dfs):
+    """Plot the results"""
+    for percent, df in dfs.items():
+        plt.figure()
+        plt.plot(df['simple-socket-filter'], label='simple-socket-filter')
+        plt.plot(df['valid-command'], label='valid-command')
+        plt.xlabel("Number of Packets")
+        plt.ylabel("Average Time (s)")
+        plt.title(f"Average Time vs. Number of Packets for {percent}%")
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
 if __name__ == "__main__":
+    # Run the tests
     run_test()
+
+    # Parse the log file
+    dfs = parse_log(THROUGHPUT)
+
+    # Plot the results
+    plot_results(dfs)

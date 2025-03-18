@@ -79,7 +79,7 @@ fn sif(socket: &UdpSocket, addr: &SocketAddr, verbose: bool) {
 	send_stop_cmd(socket, addr, verbose);
 }
 
-// Sends 100k commands where 100-percent% are PUT and percent% are BAD
+// Sends number_of_packets commands where 100-percent% are PUT and percent% are BAD
 // where percent is CLA
 fn frey(socket: &UdpSocket, addr: &SocketAddr, verbose: bool, percent: usize, number_of_packets: usize) {
 	let total = number_of_packets;
@@ -94,6 +94,30 @@ fn frey(socket: &UdpSocket, addr: &SocketAddr, verbose: bool, percent: usize, nu
 	logging(verbose, &format!("Sending {} BAD commands", bad));
 	for _ in 0..bad {
 		send_command(socket, addr, &Message::Bad(256), verbose);
+	}
+
+	send_get_cmd(socket, addr, verbose);
+	send_stop_cmd(socket, addr, verbose);
+}
+
+// Sends number_of_packets commands where 100-percent% are PUT and percent% are BAD
+// where number_of_packets and percent is CLA
+// Sends PUT and BAD commands in iterations of 100
+fn frigg(socket: &UdpSocket, addr: &SocketAddr, verbose: bool, percent: usize, number_of_packets: usize) {
+	let total = number_of_packets;
+	let bad = (total * percent) / 100;
+	let good = total - bad;
+
+	for i in 0..(total / 100) {
+		logging(verbose, &format!("Sending {} PUT commands (iteration {})", good / (total / 100), i));
+		for _ in 0..good / (total / 100) {
+			send_command(socket, addr, &Message::Put(10, 1), verbose);
+		}
+
+		logging(verbose, &format!("Sending {} BAD commands (iteration {})", bad / (total / 100), i));
+		for _ in 0..bad / (total / 100) {
+			send_command(socket, addr, &Message::Bad(256), verbose);
+		}
 	}
 
 	send_get_cmd(socket, addr, verbose);
@@ -124,6 +148,7 @@ fn main() {
 		"sylvie" => sylvie(&socket, &server_addr, verbose),
 		"sif" => sif(&socket, &server_addr, verbose),
 		"frey" => frey(&socket, &server_addr, verbose, percent, number_of_packets),
+		"frigg" => frigg(&socket, &server_addr, verbose, percent, number_of_packets),
 		_ => logging(verbose, "Not a valid behaviour"),
 	}
 }
