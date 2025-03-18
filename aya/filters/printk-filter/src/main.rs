@@ -17,17 +17,6 @@ pub fn socket_filter(ctx: SkBuffContext) -> i64 {
 
 // Helper function
 fn try_socket_filter(ctx: SkBuffContext) -> Result<(), ()> {
-    let pkt_len = ctx.len(); // Get actual packet length
-    // if pkt_len == 0 {
-    //     return Err(()); // Avoid zero-length reads
-    // }
-
-    // let read_len = core::cmp::min(pkt_len, 100); // Ensure we don't read past packet bounds
-    // let mut temp_buf: [u8; 100] = [0; 100]; // Use a smaller buffer to fit the verifier's constraints
-
-    // // Load only available bytes, up to 500 bytes max
-    // ctx.load_bytes(0, &mut temp_buf[..read_len as usize])
-    //     .map_err(|_| ())?;
 
     unsafe {
         bpf_printk!(b"dec: %d, 0x%08X", 42, 0x1234);
