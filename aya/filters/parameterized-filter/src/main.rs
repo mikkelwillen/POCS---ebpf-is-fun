@@ -24,13 +24,13 @@ pub fn socket_filter(ctx: SkBuffContext) -> i64 {
 
 fn try_socket_filter(ctx: SkBuffContext) -> Result<(), ()> {
     unsafe {
-        let param = PARAMETER.get_ptr_mut(0).ok_or(())?;
-        match *param {
-            0 => Ok(()),
+        match PARAMETER.get(0) {
+            Some(0) => Ok(()),
             _ => Err(()),
         }
     }
 }
+
 // Simple panic handler
 #[cfg(not(test))]
 #[panic_handler]
