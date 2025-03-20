@@ -11,9 +11,8 @@ import matplotlib.pyplot as plt
 NUM_RUNS = 2
 
 # Iterators
-PERCENTS = [75, 99]
-# [1, 25, 50, 75, 99]
-NUMBER_OF_PACKETS = [100, 1000, 10000, 100000, 1000000] #, 10000000]
+PERCENTS = [1, 25, 50, 75, 99]
+NUMBER_OF_PACKETS = [100, 1000, 10000, 100000, 1000000, 10000000]
 SERVERS = ["simple-socket-filter", "valid-command"]
 
 # Paths
@@ -66,9 +65,23 @@ def run_test(servers=SERVERS, percents=PERCENTS, num_packets=NUMBER_OF_PACKETS):
                 stderr=subprocess.PIPE,
             )
 
+            client_processes = [None] * 10
+
             # Run the client instance
+            for i in range(10):
+                client_processes[i] = subprocess.Popen(
+                    ["./udp_client", "-p", str(percent), "-n", str(int(packets/10)), "-b", "frigg"],
+                    cwd=os.path.join(PROJECT_ROOT, "rust-client/target/release"),
+                    stdout=subprocess.DEVNULL,
+                    stderr=subprocess.DEVNULL,
+                )
+
+            for i in range(10):
+                client_processes[i].wait()
+
+            # Send stop
             client_process = subprocess.Popen(
-                ["./udp_client", "-p", str(percent), "-n", str(packets), "-b", "frigg"],
+                ["./udp_client", "-b", "stop"],
                 cwd=os.path.join(PROJECT_ROOT, "rust-client/target/release"),
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -114,7 +127,7 @@ def parse_log(log_file):
         packets = lines[i + 2].split(": ")[1].strip()
         average_time = lines[i + 3].split(": ")[1].strip()
 
-        data.append([filter_name, percent, packets, average_time])
+        data.append([filter_name, percent, packets, float(average_time)])
 
     df = pd.DataFrame(data, columns=["Filter", "Percent", "Packets", "Average Time"])
 
@@ -135,20 +148,23 @@ def parse_log(log_file):
 
 def plot_results(dfs):
     """Plot the results"""
-    for percent, df in dfs.items():
-        plt.figure()
-        plt.plot(df['simple-socket-filter'], label='simple-socket-filter')
-        plt.plot(df['valid-command'], label='valid-command')
+    for percent, pivot_df in dfs.items():
+        plt.rcParams.update({'font.size': 18})
+        ax = pivot_df.plot(marker='o')
+        ax.set_title(f'Average Time vs Packets for Percent = {percent}')
+        ax.set_xlabel('Packets')
+        ax.set_ylabel('Average Time')
         plt.xlabel("Number of Packets")
         plt.ylabel("Average Time (s)")
         plt.title(f"Average Time vs. Number of Packets for {percent}%")
-        plt.legend()
+        plt.legend(title='Filter')
         plt.grid(True)
+        plt.tight_layout()
         plt.show()
 
 if __name__ == "__main__":
     # Run the tests
-    run_test()
+    # run_test()
 
     # Parse the log file
     dfs = parse_log(THROUGHPUT)

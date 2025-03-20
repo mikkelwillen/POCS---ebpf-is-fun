@@ -39,7 +39,7 @@ percent = option auto
 numberOfPackets :: Parser Int
 numberOfPackets = option auto
   ( long "packets"
-  <> short 'c'
+  <> short 'n'
   <> metavar "PACKETS"
   <> value 100_000
   <> help "Number of packets to send for frey2 client")
@@ -79,6 +79,9 @@ main = do
       ("sif", _) -> sif sock addr verbose
       ("frey", p) -> frey sock addr verbose p
       ("frey2", p) -> frey2 sock addr verbose p (optNumberOfPackets config)
+      ("frigg", p) -> frigg sock addr verbose p (optNumberOfPackets config)
+      ("stop", _) -> stop sock addr verbose
+      ("getstop", _) -> getstop sock addr verbose
       _ -> do logging "Not a valid behaviour" verbose
 
 -- simple client putting a lot of values into the bag server
@@ -159,8 +162,8 @@ frey sock addr verbose p = do
   sendStopCmd sock addr verbose
 
 frey2 :: Socket -> SockAddr -> Bool -> Int -> Int -> IO()
-frey2 sock addr verbose p c = do
-  let total = c
+frey2 sock addr verbose p n = do
+  let total = n
       bad = (total * p) `div` 100
       good = total - bad
   logging ("Sending " <> show good <> " PUT commands") verbose
@@ -171,6 +174,37 @@ frey2 sock addr verbose p c = do
   forM_ [1..bad] $ \_ -> do
     sendCommand sock addr $ badMsg 256
   logging "BAD commands sent" verbose
+  sendGetCmd sock addr verbose
+  sendStopCmd sock addr verbose
+
+-- sends a mix of badand good commands
+frigg :: Socket -> SockAddr -> Bool -> Int -> Int -> IO()
+frigg sock addr verbose p n = do
+  let total = n
+      bad = (total * p) `div` 100
+      good = total - bad
+      iterTotal = total `div` 100
+      iterGood = good `div` iterTotal
+      iterBad = bad `div` iterTotal
+  forM_ [1..iterTotal] $ \ _ -> do
+    logging ("Sending " <> show iterGood <> " PUT commands") verbose
+    forM_ [1..iterGood] $ \ m -> do
+      sendCommand sock addr $ putMsg 10 1
+
+    logging ("Sending " <> show iterBad <> " BAD commands") verbose
+    forM_ [1..iterBad] $ \_ -> do
+      sendCommand sock addr $ badMsg 256
+
+  sendGetCmd sock addr verbose
+
+-- sends stop message
+stop :: Socket -> SockAddr -> Bool -> IO()
+stop sock addr verbose = do
+  sendStopCmd sock addr verbose
+
+-- sends get and stop
+getstop :: Socket -> SockAddr -> Bool -> IO()
+getstop sock addr verbose = do
   sendGetCmd sock addr verbose
   sendStopCmd sock addr verbose
 

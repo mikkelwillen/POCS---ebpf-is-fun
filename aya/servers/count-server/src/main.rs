@@ -28,6 +28,7 @@ fn main() -> anyhow::Result<()> {
         let counterArray: PerCpuValues<u32> = array.get(&0, 0)?;
         let mut total: u32 = 0;
         for i in 0..nr_cpus().expect("failed to get nr_cpus") {
+            println!("counterArray[{}]: {}", i, counterArray[i]);
             total += counterArray[i];
         }
         println!("total: {}", total);
