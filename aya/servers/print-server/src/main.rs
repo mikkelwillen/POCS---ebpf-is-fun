@@ -11,7 +11,7 @@ use std::io;
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct Buf {
-    pub buf: [u8; 1500],
+    pub buf: [u8; 500],
 }
 
 unsafe impl Pod for Buf {}

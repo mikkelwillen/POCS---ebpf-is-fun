@@ -11,7 +11,7 @@ use aya_ebpf::{
 #[repr(C)]
 #[derive(Clone, Copy)]
 pub struct Buf {
-    pub buf: [u8; 1500],  // Buffer to store packet data
+    pub buf: [u8; 500],  // Buffer to store packet data
 }
 
 #[map(name="PKT_PRT_ARRAY")]pub static mut BUF: PerCpuArray<Buf> = PerCpuArray::with_max_entries(1, 0);
