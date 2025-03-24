@@ -12,6 +12,59 @@ This paper presents a comparative study of two high-level frameworks for develop
 * `/rust-client` contains the client written in Rust  
 
 ## How to run the code
+### Run the server instance
+To run the server instance, run the following command from the `aya` folder: 
+``` sh
+make run filter=<filter_name> server=<server_name> flags=<flags>
+```
+where `<filter_name>` is one of the following:
 
+``` sh
+simple-socket-filter
+reject-filter
+valid-command
+robust-valid-command
+parameterized-filter
+print-filter
+count-filter
+```
 
+and `<server_name>` is one of the following:
 
+``` sh
+simple-server
+parameterized-server
+print-server
+count-server
+ebpf-stats-server
+```
+
+`<flags>` are optional, and the follow are allowed
+
+``` sh
+--verbose -v
+--capacity -c
+```
+
+### Build release version of the server
+To build release files, run the follwing command from the `aya` folder:
+
+``` sh
+make build-release
+```
+
+These servers can then be run from their respective folders in the `aya` folder in `target/release`.
+
+### Run the client instance
+To run the client instance, run the following command from the `rust-client` folder:
+
+``` sh
+cargo run
+```
+with optional flags:
+``` sh
+--verbose -v
+--behaviour -b
+--percent -p
+--number_of_packets -n
+```
