@@ -121,6 +121,16 @@ fn frigg(socket: &UdpSocket, addr: &SocketAddr, verbose: bool, percent: usize, n
 	}
 
 	send_get_cmd(socket, addr, verbose);
+}
+
+// Sends stop command
+fn stop(socket: &UdpSocket, addr: &SocketAddr, verbose: bool) {
+	send_stop_cmd(socket, addr, verbose);
+}
+
+// Sends get command
+fn getStop(socket: &UdpSocket, addr: &SocketAddr, verbose: bool) {
+	send_get_cmd(socket, addr, verbose);
 	send_stop_cmd(socket, addr, verbose);
 }
 
@@ -149,6 +159,8 @@ fn main() {
 		"sif" => sif(&socket, &server_addr, verbose),
 		"frey" => frey(&socket, &server_addr, verbose, percent, number_of_packets),
 		"frigg" => frigg(&socket, &server_addr, verbose, percent, number_of_packets),
+		"stop" => stop(&socket, &server_addr, verbose),
+		"getstop" => getStop(&socket, &server_addr, verbose),
 		_ => logging(verbose, "Not a valid behaviour"),
 	}
 }

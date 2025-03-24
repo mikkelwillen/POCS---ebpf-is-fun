@@ -10,10 +10,8 @@ use aya_ebpf::{
     maps::PerCpuArray,
 };
 
-const CPU_CORES: u32 = 16;
-
 #[map(name = "counter")]
-static mut PACKET_COUNTER: PerCpuArray<u32> = PerCpuArray::with_max_entries(CPU_CORES, 0);
+static mut PACKET_COUNTER: PerCpuArray<u32> = PerCpuArray::with_max_entries(1, 0);
 
 // Filter that lets all packets through
 #[socket_filter]
