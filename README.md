@@ -18,7 +18,6 @@ To run the server instance, run the following command from the `aya` folder:
 make run filter=<filter_name> server=<server_name> flags=<flags>
 ```
 where `<filter_name>` is one of the following:
-
 ``` sh
 simple-socket-filter
 reject-filter
@@ -30,7 +29,6 @@ count-filter
 ```
 
 and `<server_name>` is one of the following:
-
 ``` sh
 simple-server
 parameterized-server
@@ -40,7 +38,6 @@ ebpf-stats-server
 ```
 
 `<flags>` are optional, and the follow are allowed
-
 ``` sh
 --verbose -v
 --capacity -c
@@ -48,7 +45,6 @@ ebpf-stats-server
 
 ### Build release version of the server
 To build release files, run the follwing command from the `aya` folder:
-
 ``` sh
 make build-release
 ```
